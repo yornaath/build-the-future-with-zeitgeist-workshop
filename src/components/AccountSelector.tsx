@@ -24,18 +24,12 @@ const AccountSelector = () => {
         .then(data => data.toJSON())
         .then((json: any) => json.data.free / 10 ** 10)
     },
-    { enabled: Boolean(sdk) },
+    { enabled: Boolean(sdk && selected) },
   )
 
   return (
-    <Box
-      display={'inline-flex'}
-      justifyContent="center"
-      py={2}
-      px={4}
-      background="blackAlpha.100"
-      rounded={'md'}>
-      <Flex justifyContent="center" filter={!selected ? 'grayscale(1)' : ''}>
+    <Box display={'inline-flex'} justifyContent="center" background="blackAlpha.100" rounded={'md'}>
+      <Flex justifyContent="center" filter={!selected ? 'grayscale(1)' : ''} py={2} px={4}>
         <Identicon
           value={selected || 'dE2cVL9QAgh3MZEK3ZhPG5S2YSqZET8V1Qa36epaU4pQG4pd8'}
           size={36}
@@ -44,6 +38,8 @@ const AccountSelector = () => {
       </Flex>
       <Select
         w="sm"
+        py={2}
+        px={4}
         focusBorderColor="none"
         border="none"
         onChange={onChange}
@@ -56,11 +52,28 @@ const AccountSelector = () => {
           </option>
         ))}
       </Select>
-      <Flex w="120px" alignItems="center" justify={'flex-end'} alignContent="center">
-        <Text mr={1} color="blue.500">
-          {balance.data?.toFixed(4)}
-        </Text>{' '}
-        <Text fontWeight="bold">ZBS</Text>
+
+      <Flex
+        py={2}
+        px={4}
+        w="150px"
+        alignItems="center"
+        justify={'flex-end'}
+        alignContent="center"
+        roundedBottomRight={'md'}
+        roundedTopRight={'md'}
+        textAlign="center"
+        backgroundColor="blackAlpha.100">
+        {selected ? (
+          <>
+            <Text mr={1} color="blue.500">
+              {balance.data?.toFixed(4)}
+            </Text>{' '}
+            <Text fontWeight="bold">ZBS</Text>
+          </>
+        ) : (
+          <Text flex="1">--</Text>
+        )}
       </Flex>
     </Box>
   )

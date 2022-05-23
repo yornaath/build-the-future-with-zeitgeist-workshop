@@ -12,6 +12,10 @@ export const $selectedAccount = persistentAtom<string>('')
 
 export const $loaded = atom(false)
 
+export const selectAccount = (account: InjectedAccount) => {
+  $selectedAccount.set(account.address)
+}
+
 task(async () => {
   const [sdk, extensions] = await Promise.all([
     SDK.initialize(),
@@ -33,7 +37,3 @@ task(async () => {
   $accounts.set(uniqueAccounts)
   $loaded.set(true)
 })
-
-export const selectAccount = (account: InjectedAccount) => {
-  $selectedAccount.set(account.address)
-}

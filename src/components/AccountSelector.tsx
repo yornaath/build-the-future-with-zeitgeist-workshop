@@ -9,13 +9,6 @@ const AccountSelector = () => {
   const selected = useStore(wallet.$selectedAccount)
   const accounts = useStore(wallet.$accounts)
 
-  const onChange: React.ChangeEventHandler<HTMLSelectElement> = event => {
-    const account = accounts.find(account => account.address === event.target.value)
-    if (account) {
-      wallet.selectAccount(account)
-    }
-  }
-
   const balance = useQuery<number>(
     ['balance', selected],
     async () => {
@@ -26,6 +19,13 @@ const AccountSelector = () => {
     },
     { enabled: Boolean(sdk && selected) },
   )
+
+  const onChange: React.ChangeEventHandler<HTMLSelectElement> = event => {
+    const account = accounts.find(account => account.address === event.target.value)
+    if (account) {
+      wallet.selectAccount(account)
+    }
+  }
 
   return (
     <Box
@@ -54,7 +54,7 @@ const AccountSelector = () => {
         value={selected}
         placeholder="Select account">
         {accounts.map(account => (
-          <option value={account.address}>
+          <option key={account.address} value={account.address}>
             {account.name ? `${account.name}: ` : ''}
             {account.address}
           </option>

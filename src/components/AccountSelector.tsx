@@ -2,17 +2,17 @@ import { useStore } from '@nanostores/react'
 import { Select, Flex, Box, Text } from '@chakra-ui/react'
 import Identicon from '@polkadot/react-identicon'
 import { useQuery } from 'react-query'
-import { $accounts, $sdk, $selectedAccount, selectAccount } from '../state/wallet'
+import * as wallet from '../state/wallet'
 
 const AccountSelector = () => {
-  const sdk = useStore($sdk)
-  const selected = useStore($selectedAccount)
-  const accounts = useStore($accounts)
+  const sdk = useStore(wallet.$sdk)
+  const selected = useStore(wallet.$selectedAccount)
+  const accounts = useStore(wallet.$accounts)
 
   const onChange: React.ChangeEventHandler<HTMLSelectElement> = event => {
     const account = accounts.find(account => account.address === event.target.value)
     if (account) {
-      selectAccount(account)
+      wallet.selectAccount(account)
     }
   }
 

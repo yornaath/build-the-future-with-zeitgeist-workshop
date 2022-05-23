@@ -1,11 +1,11 @@
 import React from 'react'
-import { useStore } from '@nanostores/react'
 import { Box, Spinner } from '@chakra-ui/react'
+import { useStore } from '@nanostores/react'
 import AccountSelector from './components/AccountSelector'
-import { $loaded } from './state/wallet'
+import * as wallet from './state/wallet'
 
 const App = () => {
-  const loaded = useStore($loaded)
+  const loaded = useStore(wallet.$loaded)
 
   return !loaded ? (
     <Box position={'fixed'} display={'flex'} h="100%" w="100%" alignItems="center" justifyContent="center">

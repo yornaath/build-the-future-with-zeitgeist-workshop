@@ -1,5 +1,5 @@
 import { useStore } from '@nanostores/react'
-import { Select, Flex, Box, Text } from '@chakra-ui/react'
+import { Select, Flex, Box, Text, Image } from '@chakra-ui/react'
 import Identicon from '@polkadot/react-identicon'
 import { useQuery } from 'react-query'
 import * as wallet from '../state/wallet'
@@ -64,7 +64,7 @@ const AccountSelector = () => {
       <Flex
         py={2}
         px={4}
-        w="150px"
+        w="172px"
         alignItems="center"
         justify={'flex-end'}
         alignContent="center"
@@ -77,6 +77,7 @@ const AccountSelector = () => {
             <Text mr={1} color="blue.500">
               {balance.data?.toFixed(4)}
             </Text>{' '}
+            <Image w={4} mx={1} src="/zeitgeist.png" />
             <Text fontWeight="bold">ZBS</Text>
           </>
         ) : (

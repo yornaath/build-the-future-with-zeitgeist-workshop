@@ -1,24 +1,25 @@
-import { allTasks } from 'nanostores'
-import { useStore } from '@nanostores/solid'
-import { Component, For, Show, createSignal, createEffect } from 'solid-js'
-import { Box, Container, Spinner } from '@hope-ui/solid'
+import React from 'react'
+import { useStore } from '@nanostores/react'
+import { Box, Container, Flex, Spinner } from '@chakra-ui/react'
 import AccountSelector from './components/AccountSelector'
-import { $loaded } from './state/wallet'
+import { $loaded, $sdk, $selectedAccount } from './state/wallet'
 
-const App: Component = () => {
+const App = () => {
   const loaded = useStore($loaded)
+  const sdk = useStore($sdk)
+  const account = useStore($selectedAccount)
 
   return (
     <Container mt={20}>
-      <Show
-        when={loaded()}
-        fallback={
-          <Box display={'flex'} m={88} justifyContent="center">
-            <Spinner />
-          </Box>
-        }>
-        <AccountSelector />
-      </Show>
+      {!loaded ? (
+        <Box display={'flex'} m={88} justifyContent="center">
+          <Spinner />
+        </Box>
+      ) : (
+        <Flex>
+          <AccountSelector />
+        </Flex>
+      )}
     </Container>
   )
 }

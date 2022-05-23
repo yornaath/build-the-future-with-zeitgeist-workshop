@@ -1,61 +1,33 @@
-import { useStore } from '@nanostores/solid'
-import { Component, For, JSX, Show } from 'solid-js'
-import {
-  Box,
-  Select,
-  SelectContent,
-  SelectIcon,
-  SelectListbox,
-  SelectOption,
-  SelectOptionIndicator,
-  SelectOptionText,
-  SelectPlaceholder,
-  SelectTrigger,
-  SelectValue,
-} from '@hope-ui/solid'
+import { useStore } from '@nanostores/react'
+import { Select, Flex, Box } from '@chakra-ui/react'
+import Identicon from '@polkadot/react-identicon'
 import { $accounts, $selectedAccount, selectAccount } from '../state/wallet'
-import { Identicon } from './Identicon'
 
-const AccountSelector: Component = () => {
+const AccountSelector = () => {
   const selected = useStore($selectedAccount)
   const accounts = useStore($accounts)
 
-  const onChange = (address: string) => {
-    const account = accounts().find(account => account.address === address)
+  const onChange: React.ChangeEventHandler<HTMLSelectElement> = event => {
+    const account = accounts.find(account => account.address === event.target.value)
     if (account) {
       selectAccount(account)
     }
   }
 
   return (
-    <Select onChange={onChange} value={selected()}>
-      <SelectTrigger>
-        <SelectPlaceholder>Select account</SelectPlaceholder>
-        <Show when={selected()}>
-          <Box mr={8}>
-            <Identicon address={selected()} size={22} />
-          </Box>
-        </Show>
-        <SelectValue />
-        <SelectIcon />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectListbox>
-          <For each={accounts()}>
-            {item => (
-              <SelectOption value={item.address}>
-                <Identicon address={item.address} size={22} />
-                <SelectOptionText>
-                  {item.name ? `${item.name}: ` : ''}
-                  {item.address}
-                </SelectOptionText>
-                <SelectOptionIndicator />
-              </SelectOption>
-            )}
-          </For>
-        </SelectListbox>
-      </SelectContent>
-    </Select>
+    <Flex justifyContent="center" p={2} background="blackAlpha.100" rounded={'md'}>
+      <Flex justifyContent="center">
+        <Identicon value={selected} size={36} theme="polkadot" />
+      </Flex>
+      <Select border="none" onChange={onChange} value={selected} placeholder="Select account">
+        {accounts.map(account => (
+          <option value={account.address}>
+            {account.name ? `${account.name}: ` : ''}
+            {account.address}
+          </option>
+        ))}
+      </Select>
+    </Flex>
   )
 }
 

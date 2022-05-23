@@ -1,16 +1,17 @@
 /* @refresh reload */
-import { render } from "solid-js/web";
-import { HopeProvider, NotificationsProvider } from "@hope-ui/solid";
 
-import App from "./App";
+import React from 'react'
+import { ChakraProvider } from '@chakra-ui/react'
+import * as ReactDOM from 'react-dom/client'
+import App from './App'
 
-render(
-  () => (
-    <HopeProvider>
-      <NotificationsProvider placement="bottom-end">
+const rootElement = document.getElementById('root')
+if (rootElement) {
+  ReactDOM.createRoot(rootElement).render(
+    <React.StrictMode>
+      <ChakraProvider>
         <App />
-      </NotificationsProvider>
-    </HopeProvider>
-  ),
-  document.getElementById("root") as HTMLElement
-);
+      </ChakraProvider>
+    </React.StrictMode>,
+  )
+}

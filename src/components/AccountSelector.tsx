@@ -1,5 +1,5 @@
 import { useStore } from '@nanostores/solid'
-import { Component, For, JSX } from 'solid-js'
+import { Component, For, JSX, Show } from 'solid-js'
 import {
   Box,
   Select,
@@ -31,9 +31,11 @@ const AccountSelector: Component = () => {
     <Select onChange={onChange} value={selected()}>
       <SelectTrigger>
         <SelectPlaceholder>Select account</SelectPlaceholder>
-        <Box mr={8}>
-          <Identicon address={selected()} size={22} />
-        </Box>
+        <Show when={selected()}>
+          <Box mr={8}>
+            <Identicon address={selected()} size={22} />
+          </Box>
+        </Show>
         <SelectValue />
         <SelectIcon />
       </SelectTrigger>

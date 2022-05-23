@@ -12,7 +12,7 @@ const App = () => {
       <Spinner />
     </Box>
   ) : (
-    <Box position={'fixed'} bottom="4" left="4" w="md">
+    <Box position={'fixed'} bottom="4" left="4">
       <AccountSelector />
     </Box>
   )

@@ -1,9 +1,11 @@
 import { useStore } from '@nanostores/react'
-import { Select, Flex, Box } from '@chakra-ui/react'
+import { Select, Flex, Box, Text } from '@chakra-ui/react'
 import Identicon from '@polkadot/react-identicon'
-import { $accounts, $selectedAccount, selectAccount } from '../state/wallet'
+import { useQuery } from 'react-query'
+import { $accounts, $sdk, $selectedAccount, selectAccount } from '../state/wallet'
 
 const AccountSelector = () => {
+  const sdk = useStore($sdk)
   const selected = useStore($selectedAccount)
   const accounts = useStore($accounts)
 
@@ -14,8 +16,25 @@ const AccountSelector = () => {
     }
   }
 
+  const balance = useQuery<number>(
+    'balance',
+    async () => {
+      return sdk?.api.query.system
+        .account(selected)
+        .then(data => data.toJSON())
+        .then((json: any) => json.data.free / 10 ** 10)
+    },
+    { enabled: Boolean(sdk) },
+  )
+
   return (
-    <Box display={'inline-flex'} justifyContent="center" p={2} background="blackAlpha.100" rounded={'md'}>
+    <Box
+      display={'inline-flex'}
+      justifyContent="center"
+      py={2}
+      px={4}
+      background="blackAlpha.100"
+      rounded={'md'}>
       <Flex justifyContent="center" filter={!selected ? 'grayscale(1)' : ''}>
         <Identicon
           value={selected || 'dE2cVL9QAgh3MZEK3ZhPG5S2YSqZET8V1Qa36epaU4pQG4pd8'}
@@ -24,6 +43,7 @@ const AccountSelector = () => {
         />
       </Flex>
       <Select
+        w="sm"
         focusBorderColor="none"
         border="none"
         onChange={onChange}
@@ -36,6 +56,12 @@ const AccountSelector = () => {
           </option>
         ))}
       </Select>
+      <Flex w="120px" alignItems="center" justify={'flex-end'} alignContent="center">
+        <Text mr={1} color="blue.500">
+          {balance.data?.toFixed(4)}
+        </Text>{' '}
+        <Text fontWeight="bold">ZBS</Text>
+      </Flex>
     </Box>
   )
 }

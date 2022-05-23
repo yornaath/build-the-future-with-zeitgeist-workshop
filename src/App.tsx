@@ -6,8 +6,6 @@ import { $loaded, $sdk, $selectedAccount } from './state/wallet'
 
 const App = () => {
   const loaded = useStore($loaded)
-  const sdk = useStore($sdk)
-  const account = useStore($selectedAccount)
 
   return (
     <Container mt={20}>

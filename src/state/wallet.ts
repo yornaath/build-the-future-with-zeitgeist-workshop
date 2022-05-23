@@ -1,4 +1,4 @@
-import { atom, onMount, task, map } from 'nanostores'
+import { atom, task } from 'nanostores'
 import { uniqBy, prop } from 'ramda'
 import { persistentAtom } from '@nanostores/persistent'
 import { encodeAddress } from '@polkadot/keyring'

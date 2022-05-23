@@ -23,7 +23,12 @@ const AccountSelector = () => {
           theme="polkadot"
         />
       </Flex>
-      <Select border="none" onChange={onChange} value={selected} placeholder="Select account">
+      <Select
+        focusBorderColor="none"
+        border="none"
+        onChange={onChange}
+        value={selected}
+        placeholder="Select account">
         {accounts.map(account => (
           <option value={account.address}>
             {account.name ? `${account.name}: ` : ''}

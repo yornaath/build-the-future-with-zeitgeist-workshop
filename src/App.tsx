@@ -1,8 +1,8 @@
 import React from 'react'
 import { useStore } from '@nanostores/react'
-import { Box, Container, Flex, Spinner } from '@chakra-ui/react'
+import { Box, Spinner } from '@chakra-ui/react'
 import AccountSelector from './components/AccountSelector'
-import { $loaded, $sdk, $selectedAccount } from './state/wallet'
+import { $loaded } from './state/wallet'
 
 const App = () => {
   const loaded = useStore($loaded)

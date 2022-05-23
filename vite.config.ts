@@ -13,6 +13,9 @@ export default defineConfig({
     }),
     NodeModulesPolyfillPlugin(),
   ],
+  server: {
+    port: 3007,
+  },
   optimizeDeps: {
     esbuildOptions: {
       // Node.js global to browser globalThis

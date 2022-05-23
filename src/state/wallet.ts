@@ -20,11 +20,11 @@ task(async () => {
 
   const [consts, accounts] = await Promise.all([
     sdk.api.consts,
-    Promise.all(extensions.map(extension => extension.accounts.get())),
+    ...extensions.map(extension => extension.accounts.get()),
   ])
 
   const ss58Format = Number(consts.system.ss58Prefix.toString())
-  const uniqueAccounts = uniqBy(prop('address'), accounts.flat()).map(account => ({
+  const uniqueAccounts = uniqBy(prop('address'), accounts).map(account => ({
     ...account,
     address: encodeAddress(account.address, ss58Format),
   }))

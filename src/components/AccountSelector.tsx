@@ -16,8 +16,12 @@ const AccountSelector = () => {
 
   return (
     <Flex justifyContent="center" p={2} background="blackAlpha.100" rounded={'md'}>
-      <Flex justifyContent="center">
-        <Identicon value={selected} size={36} theme="polkadot" />
+      <Flex justifyContent="center" filter={!selected ? 'grayscale(1)' : ''}>
+        <Identicon
+          value={selected || 'dE2cVL9QAgh3MZEK3ZhPG5S2YSqZET8V1Qa36epaU4pQG4pd8'}
+          size={36}
+          theme="polkadot"
+        />
       </Flex>
       <Select border="none" onChange={onChange} value={selected} placeholder="Select account">
         {accounts.map(account => (

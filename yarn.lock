@@ -506,6 +506,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nanostores/persistent@npm:^0.5.2":
+  version: 0.5.2
+  resolution: "@nanostores/persistent@npm:0.5.2"
+  peerDependencies:
+    nanostores: ^0.5.0
+  checksum: 8a35bc3d812ac7579c615f7378c04618fcf9d8506271ec827a71be250f8768bb3b61789f5be42404200efca087f07dd1a3a34a00ba90a25df1732ea89e062295
+  languageName: node
+  linkType: hard
+
 "@nanostores/solid@npm:^0.1.6":
   version: 0.1.6
   resolution: "@nanostores/solid@npm:0.1.6"
@@ -623,6 +632,38 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@polkadot/extension-dapp@npm:^0.43.2":
+  version: 0.43.2
+  resolution: "@polkadot/extension-dapp@npm:0.43.2"
+  dependencies:
+    "@babel/runtime": ^7.17.9
+    "@polkadot/extension-inject": ^0.43.2
+    "@polkadot/util": ^9.2.1
+    "@polkadot/util-crypto": ^9.2.1
+  peerDependencies:
+    "@polkadot/api": "*"
+    "@polkadot/util": "*"
+    "@polkadot/util-crypto": "*"
+  checksum: ff279d265f95cd6558d72762414fa516429514fe191545792f60a636ce63552736f03fd9ad358359b0f54e7016b6dc4d4bf853cf0927f3dda103d6c23a759b1c
+  languageName: node
+  linkType: hard
+
+"@polkadot/extension-inject@npm:^0.43.2":
+  version: 0.43.2
+  resolution: "@polkadot/extension-inject@npm:0.43.2"
+  dependencies:
+    "@babel/runtime": ^7.17.9
+    "@polkadot/rpc-provider": ^8.4.2
+    "@polkadot/types": ^8.4.2
+    "@polkadot/util": ^9.2.1
+    "@polkadot/util-crypto": ^9.2.1
+    "@polkadot/x-global": ^9.2.1
+  peerDependencies:
+    "@polkadot/api": "*"
+  checksum: 0b7b1a82ac01e424d4df8853c56d77e366e6a6deb193bd8496c6c01ed39b1ffb6dc1c96286ba6c62caf9aeceb4b2c0574f69e599468ee75b3a310b05e20fd383
+  languageName: node
+  linkType: hard
+
 "@polkadot/keyring@npm:^9.2.1":
   version: 9.2.1
   resolution: "@polkadot/keyring@npm:9.2.1"
@@ -675,7 +716,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/rpc-provider@npm:8.5.1":
+"@polkadot/rpc-provider@npm:8.5.1, @polkadot/rpc-provider@npm:^8.4.2":
   version: 8.5.1
   resolution: "@polkadot/rpc-provider@npm:8.5.1"
   dependencies:
@@ -802,7 +843,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/types@npm:8.5.1, @polkadot/types@npm:^8.5.1":
+"@polkadot/types@npm:8.5.1, @polkadot/types@npm:^8.4.2, @polkadot/types@npm:^8.5.1":
   version: 8.5.1
   resolution: "@polkadot/types@npm:8.5.1"
   dependencies:
@@ -1203,6 +1244,15 @@ __metadata:
   version: 16.11.36
   resolution: "@types/node@npm:16.11.36"
   checksum: 878e8e2032869785dd4f73dd862042c7eb588fb9a27199f1b493a7029438ccb58f96e203c35c2e66e08307ca3f9767133cae888958c15e031982f7e9719e5e47
+  languageName: node
+  linkType: hard
+
+"@types/ramda@npm:^0.28.13":
+  version: 0.28.13
+  resolution: "@types/ramda@npm:0.28.13"
+  dependencies:
+    ts-toolbelt: ^6.15.1
+  checksum: 799faf952c219b7cc688ac55fc91da91a170279fe3b40433660a5bbfca99bbedace7fb4d49e54ab29de73e0ab400004ec982a4a914a63e111ccfedc7314dc953
   languageName: node
   linkType: hard
 
@@ -4369,6 +4419,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ramda@npm:^0.28.0":
+  version: 0.28.0
+  resolution: "ramda@npm:0.28.0"
+  checksum: 44ea6e5010bba70151b6a92d8114a91915e8b5a16105cce65fae58c9d7386b812c429645e35f21141d7087568550ce383bc10ee1a65cdec951f4b69ea457e6a4
+  languageName: node
+  linkType: hard
+
 "readable-stream@npm:^2.2.2":
   version: 2.3.7
   resolution: "readable-stream@npm:2.3.7"
@@ -4916,6 +4973,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ts-toolbelt@npm:^6.15.1":
+  version: 6.15.5
+  resolution: "ts-toolbelt@npm:6.15.5"
+  checksum: 24ad00cfd9ce735c76c873a9b1347eac475b94e39ebbdf100c9019dce88dd5f4babed52884cf82bb456a38c28edd0099ab6f704b84b2e5e034852b618472c1f3
+  languageName: node
+  linkType: hard
+
 "ts-toolbelt@npm:^9.6.0":
   version: 9.6.0
   resolution: "ts-toolbelt@npm:9.6.0"
@@ -5153,11 +5217,15 @@ __metadata:
     "@esbuild-plugins/node-globals-polyfill": ^0.1.1
     "@esbuild-plugins/node-modules-polyfill": ^0.1.4
     "@hope-ui/solid": ^0.6.1
+    "@nanostores/persistent": ^0.5.2
     "@nanostores/solid": ^0.1.6
+    "@polkadot/extension-dapp": ^0.43.2
     "@polkadot/types": ^8.5.1
     "@stitches/core": ^1.2.8
+    "@types/ramda": ^0.28.13
     "@zeitgeistpm/sdk": ^0.5.2
     electron: ^18.2.4
+    ramda: ^0.28.0
     rollup-plugin-node-polyfills: ^0.2.1
     solid-js: ^1.4.2
     solid-transition-group: ^0.0.10

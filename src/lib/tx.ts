@@ -3,32 +3,6 @@ import { notificationService } from "@hope-ui/solid";
 
 type GenericCallback = (...args: any[]) => void;
 
-const processEvents = (
-  events: IEventRecord<any>[],
-  {
-    failCallback,
-    successCallback,
-  }: { failCallback?: GenericCallback; successCallback?: GenericCallback },
-  successMethod: string = "ExtrinsicSuccess",
-  unsub?: () => void
-) => {
-  for (const event of events) {
-    const { data, method } = event.event;
-    if (method === "ExtrinsicFailed" && failCallback) {
-      const { index, error } = data.toHuman()[0].Module;
-      failCallback({ index, error });
-    }
-    if (method === "BatchInterrupted" && failCallback) {
-      const { index, error } = data.toHuman()[1].Module;
-      failCallback({ index, error }, +data.toHuman()[0]);
-    } else if (successCallback && method === successMethod) {
-      const res = data.toHuman();
-      successCallback(res);
-    }
-    unsub && unsub();
-  }
-};
-
 export const extrinsicCallback = ({
   successCallback,
   broadcastCallback,
@@ -84,4 +58,30 @@ export const extrinsicCallback = ({
           });
     }
   };
+};
+
+const processEvents = (
+  events: IEventRecord<any>[],
+  {
+    failCallback,
+    successCallback,
+  }: { failCallback?: GenericCallback; successCallback?: GenericCallback },
+  successMethod: string = "ExtrinsicSuccess",
+  unsub?: () => void
+) => {
+  for (const event of events) {
+    const { data, method } = event.event;
+    if (method === "ExtrinsicFailed" && failCallback) {
+      const { index, error } = data.toHuman()[0].Module;
+      failCallback({ index, error });
+    }
+    if (method === "BatchInterrupted" && failCallback) {
+      const { index, error } = data.toHuman()[1].Module;
+      failCallback({ index, error }, +data.toHuman()[0]);
+    } else if (successCallback && method === successMethod) {
+      const res = data.toHuman();
+      successCallback(res);
+    }
+    unsub?.();
+  }
 };

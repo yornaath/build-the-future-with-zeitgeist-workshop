@@ -17,7 +17,7 @@ const AccountSelector = () => {
   }
 
   const balance = useQuery<number>(
-    'balance',
+    ['balance', selected],
     async () => {
       return sdk?.api.query.system
         .account(selected)

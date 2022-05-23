@@ -1,6 +1,7 @@
 import { useStore } from '@nanostores/solid'
 import { Component, For, JSX } from 'solid-js'
 import {
+  Box,
   Select,
   SelectContent,
   SelectIcon,
@@ -13,6 +14,7 @@ import {
   SelectValue,
 } from '@hope-ui/solid'
 import { $accounts, $selectedAccount, selectAccount } from '../state/account'
+import { Identicon } from './Identicon'
 
 const AccountSelector: Component = () => {
   const selected = useStore($selectedAccount)
@@ -29,6 +31,9 @@ const AccountSelector: Component = () => {
     <Select onChange={onChange} value={selected()}>
       <SelectTrigger>
         <SelectPlaceholder>Select account</SelectPlaceholder>
+        <Box mr={8}>
+          <Identicon address={selected()} size={22} />
+        </Box>
         <SelectValue />
         <SelectIcon />
       </SelectTrigger>
@@ -37,7 +42,11 @@ const AccountSelector: Component = () => {
           <For each={accounts()}>
             {item => (
               <SelectOption value={item.address}>
-                <SelectOptionText>{item.address}</SelectOptionText>
+                <Identicon address={item.address} size={22} />
+                <SelectOptionText>
+                  {item.name ? `${item.name}: ` : ''}
+                  {item.address}
+                </SelectOptionText>
                 <SelectOptionIndicator />
               </SelectOption>
             )}

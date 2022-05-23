@@ -23,6 +23,7 @@
     "@nanostores/solid": "^0.1.6",
     "@polkadot/extension-dapp": "^0.43.2",
     "@polkadot/types": "^8.5.1",
+    "@polkadot/ui-shared": "^2.2.1",
     "@stitches/core": "^1.2.8",
     "@zeitgeistpm/sdk": "^0.5.2",
     "electron": "^18.2.4",

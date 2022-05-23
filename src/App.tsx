@@ -8,17 +8,17 @@ const App = () => {
   const loaded = useStore($loaded)
 
   return (
-    <Container mt={20}>
+    <Box maxW={'container.sm'}>
       {!loaded ? (
         <Box display={'flex'} m={88} justifyContent="center">
           <Spinner />
         </Box>
       ) : (
-        <Flex>
+        <Box position={'fixed'} bottom="4" left="4" w="md">
           <AccountSelector />
-        </Flex>
+        </Box>
       )}
-    </Container>
+    </Box>
   )
 }
 

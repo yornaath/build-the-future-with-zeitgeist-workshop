@@ -28,8 +28,16 @@ const AccountSelector = () => {
   )
 
   return (
-    <Box display={'inline-flex'} justifyContent="center" background="blackAlpha.100" rounded={'md'}>
-      <Flex justifyContent="center" filter={!selected ? 'grayscale(1)' : ''} py={2} px={4}>
+    <Box
+      display={'inline-flex'}
+      justifyContent="center"
+      background="blackAlpha.100"
+      rounded={'md'}>
+      <Flex
+        justifyContent="center"
+        filter={!selected ? 'grayscale(1)' : ''}
+        py={2}
+        px={4}>
         <Identicon
           value={selected || 'dE2cVL9QAgh3MZEK3ZhPG5S2YSqZET8V1Qa36epaU4pQG4pd8'}
           size={36}

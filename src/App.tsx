@@ -8,7 +8,13 @@ const App = () => {
   const loaded = useStore(wallet.$loaded)
 
   return !loaded ? (
-    <Box position={'fixed'} display={'flex'} h="100%" w="100%" alignItems="center" justifyContent="center">
+    <Box
+      position={'fixed'}
+      display={'flex'}
+      h="100%"
+      w="100%"
+      alignItems="center"
+      justifyContent="center">
       <Spinner />
     </Box>
   ) : (

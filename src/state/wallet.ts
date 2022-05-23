@@ -13,7 +13,11 @@ export const $selectedAccount = persistentAtom<string>('')
 export const $loaded = atom(false)
 
 task(async () => {
-  const [sdk, extensions] = await Promise.all([SDK.initialize(), web3Enable('zeitgeist-workshop')])
+  const [sdk, extensions] = await Promise.all([
+    SDK.initialize(),
+    web3Enable('zeitgeist-workshop'),
+  ])
+
   const [consts, accounts] = await Promise.all([
     sdk.api.consts,
     Promise.all(extensions.map(extension => extension.accounts.get())),

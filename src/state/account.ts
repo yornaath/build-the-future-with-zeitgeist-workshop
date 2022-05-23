@@ -1,4 +1,4 @@
-import { atom, onMount } from 'nanostores'
+import { atom, onMount, action } from 'nanostores'
 import { persistentAtom } from '@nanostores/persistent'
 import { uniqBy, prop } from 'ramda'
 import { InjectedAccount } from '@polkadot/extension-inject/types'

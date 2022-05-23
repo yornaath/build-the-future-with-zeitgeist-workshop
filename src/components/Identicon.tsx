@@ -7,11 +7,14 @@ export interface Props {
   size: number
 }
 
-export const Identicon: Component<Props> = ({ address, isAlternative = false, size }: Props) => {
-  const circles = createMemo(() => polkadotIcon(address, { isAlternative }))
+export const Identicon: Component<Props> = (props: Props) => {
+  const circles = createMemo(
+    () => polkadotIcon(props.address, { isAlternative: props.isAlternative || false }),
+    props.address,
+  )
 
   return (
-    <svg height={size} id={address} viewBox="0 0 64 64" width={size}>
+    <svg height={props.size} id={props.address} viewBox="0 0 64 64" width={props.size}>
       <For each={circles()}>
         {circle => <circle cx={circle.cx} cy={circle.cy} fill={circle.fill} r={circle.r} />}
       </For>

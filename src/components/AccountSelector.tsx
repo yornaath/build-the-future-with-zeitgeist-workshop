@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@hope-ui/solid'
-import { $accounts, $selectedAccount, selectAccount } from '../state/account'
+import { $accounts, $selectedAccount, selectAccount } from '../state/wallet'
 import { Identicon } from './Identicon'
 
 const AccountSelector: Component = () => {

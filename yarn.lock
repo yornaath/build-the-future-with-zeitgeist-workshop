@@ -1335,6 +1335,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tick-tack-block/gamelogic@workspace:packages/gamelogic":
+  version: 0.0.0-use.local
+  resolution: "@tick-tack-block/gamelogic@workspace:packages/gamelogic"
+  languageName: unknown
+  linkType: soft
+
 "@tick-tack-block/gui@workspace:packages/gui":
   version: 0.0.0-use.local
   resolution: "@tick-tack-block/gui@workspace:packages/gui"

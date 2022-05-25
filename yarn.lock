@@ -1338,6 +1338,8 @@ __metadata:
 "@tick-tack-block/gamelogic@workspace:packages/gamelogic":
   version: 0.0.0-use.local
   resolution: "@tick-tack-block/gamelogic@workspace:packages/gamelogic"
+  dependencies:
+    immutability-helper: ^3.1.1
   languageName: unknown
   linkType: soft
 
@@ -1378,9 +1380,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tick-tack-block/referee@workspace:packages/referee":
+"@tick-tack-block/referee@workspace:*, @tick-tack-block/referee@workspace:packages/referee":
   version: 0.0.0-use.local
   resolution: "@tick-tack-block/referee@workspace:packages/referee"
+  dependencies:
+    "@tick-tack-block/referee": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -3381,6 +3385,13 @@ __metadata:
   version: 1.2.1
   resolution: "ieee754@npm:1.2.1"
   checksum: 5144c0c9815e54ada181d80a0b810221a253562422e7c6c3a60b1901154184f49326ec239d618c416c1c5945a2e197107aee8d986a3dd836b53dffefd99b5e7e
+  languageName: node
+  linkType: hard
+
+"immutability-helper@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "immutability-helper@npm:3.1.1"
+  checksum: 6fdbf6d2123efa567263e904bbaff07aca0e24560d270d34967b03aab8ec20bd3e4057f394d59e50eb6c4718c9415591a6281692bb0aafd522ad72cf4887133f
   languageName: node
   linkType: hard
 

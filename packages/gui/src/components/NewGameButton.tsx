@@ -72,7 +72,7 @@ export const NewGameButton = () => {
         {
           name: game.opponent,
           ticker: lastFour(game.opponent),
-          color: '#db3de0',
+          color: '#ac2dba',
         },
       ],
     }
@@ -127,7 +127,7 @@ export const NewGameButton = () => {
     <>
       <Button
         onClick={onOpen}
-        colorScheme={'green'}
+        colorScheme={'seer'}
         size="lg"
         leftIcon={<IoLogoGameControllerA size={24} />}>
         New Game
@@ -173,7 +173,7 @@ export const NewGameButton = () => {
             </ModalBody>
 
             <ModalFooter>
-              <Button type="submit" colorScheme="green" mr={3}>
+              <Button type="submit" colorScheme={'seer'} mr={3}>
                 Create!
               </Button>
               <Button variant="ghost" onClick={onClose}>

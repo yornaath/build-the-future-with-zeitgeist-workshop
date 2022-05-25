@@ -1,0 +1,13 @@
+@tick-tack-block/gamelogic:test: cache hit, replaying output [2ma33a7a3dae779ccb[0m
+[32m@tick-tack-block/gamelogic:test: [0mPASS test/gamestate.test.ts
+[32m@tick-tack-block/gamelogic:test: [0m  GameState
+[32m@tick-tack-block/gamelogic:test: [0m    ✓ Challenged should win if challenger makes the first move. (1 ms)
+[32m@tick-tack-block/gamelogic:test: [0m    ✓ Making correct turns updates the game state coordinates. (1 ms)
+[32m@tick-tack-block/gamelogic:test: [0m    ✓ Winning moves should result in finished with correct winner. (1 ms)
+[32m@tick-tack-block/gamelogic:test: [0m    ✓ Opponent should win when player makes to subsequent moves
+[32m@tick-tack-block/gamelogic:test: [0m
+[32m@tick-tack-block/gamelogic:test: [0mTest Suites: 1 passed, 1 total
+[32m@tick-tack-block/gamelogic:test: [0mTests:       4 passed, 4 total
+[32m@tick-tack-block/gamelogic:test: [0mSnapshots:   0 total
+[32m@tick-tack-block/gamelogic:test: [0mTime:        0.783 s, estimated 2 s
+[32m@tick-tack-block/gamelogic:test: [0mRan all test suites.

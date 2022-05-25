@@ -1,7 +1,19 @@
-import { GameBoard, Turn } from "../src";
+import { empty, GameBoard, GameState, Turn } from "../src";
 
 export const challenger = "foo";
 export const challenged = "bar";
+
+export const createFreshState = (): GameState => {
+  return {
+    type: "fresh",
+    players: {
+      challenger,
+      challenged,
+    },
+    state: empty(),
+    events: [],
+  };
+};
 
 export const moves: [GameBoard, Turn, GameBoard][] = [
   [

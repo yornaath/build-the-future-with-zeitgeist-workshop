@@ -1,8 +1,10 @@
 import React from 'react'
 import { Box, Spinner } from '@chakra-ui/react'
 import { useStore } from '@nanostores/react'
-import AccountSelector from './components/AccountSelector'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import * as wallet from './state/wallet'
+import { IndexPage } from './pages/Index'
+import { Layout } from './components/Layout'
 
 const App = () => {
   const loaded = useStore(wallet.$loaded)
@@ -18,9 +20,13 @@ const App = () => {
       <Spinner />
     </Box>
   ) : (
-    <Box position={'fixed'} bottom="4" left="4">
-      <AccountSelector />
-    </Box>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<IndexPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
 

@@ -169,16 +169,15 @@ export const makeMove = (state: GameState, turn: Turn): GameState => {
 };
 
 export const isPlayersTurn = (state: GameState, turn: Turn): Boolean => {
+  const turnBelongsTo = getPlayerTurn(state);
+  return turn.player === state.players[turnBelongsTo];
+};
+
+export const getPlayerTurn = (state: GameState) => {
   const slots = state.state.flat();
   const movesByChallenger = slots.filter((slot) => slot === "x").length;
   const movesByChallenged = slots.filter((slot) => slot === "o").length;
   const turnBelongsTo: keyof GameState["players"] =
     movesByChallenged > movesByChallenger ? "challenger" : "challenged";
-  // console.log({
-  //   turn: turn.player,
-  //   movesByChallenger,
-  //   movesByChallenged,
-  //   turnBelongsTo,
-  // });
-  return turn.player === state.players[turnBelongsTo];
+  return turnBelongsTo;
 };

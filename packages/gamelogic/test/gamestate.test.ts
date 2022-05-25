@@ -10,7 +10,7 @@ describe("GameState", () => {
     expect((state as GS.FinishedGame).winner).toBe(challenged);
   });
 
-  test("General moves", () => {
+  test("Making correct turns updates the game state coordinates.", () => {
     let state = createFreshState();
 
     state = GS.turn(state, { player: challenged, coord: [0, 0] });
@@ -27,7 +27,7 @@ describe("GameState", () => {
     ]);
   });
 
-  test("Winning moves", () => {
+  test("Winning moves should result in finished with correct winner.", () => {
     for (const [start, turn, end] of moves) {
       let state: GS.GameState = {
         type: "progressing",

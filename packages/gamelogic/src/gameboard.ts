@@ -13,3 +13,9 @@ export type Challenged = "o";
 export type Empty = null;
 
 export type Slot = Challenger | Challenged | Empty;
+
+export const empty = (): GameBoard => [
+  [null, null, null],
+  [null, null, null],
+  [null, null, null],
+];

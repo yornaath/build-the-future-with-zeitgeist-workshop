@@ -31,7 +31,7 @@ export type Turn = {
 };
 
 export const turn = (state: GameState, turn: Turn): GameState => {
-  if (!Object.keys(state.players).includes(turn.player)) {
+  if (!Object.values(state.players).includes(turn.player)) {
     return {
       ...state,
       events: [
@@ -64,11 +64,20 @@ export const turn = (state: GameState, turn: Turn): GameState => {
   }
 
   if (state.type === "fresh") {
-    return applyTurn(state, turn);
+    return makeMove(state, turn);
   }
 
   if (state.type === "progressing" && isPlayersTurn(state, turn)) {
-    return applyTurn(state, turn);
+    const next = makeMove(state, turn);
+    const winner = hasWinner(next);
+    if (winner) {
+      return {
+        ...next,
+        type: "finished",
+        winner: state.players[winner],
+      };
+    }
+    return next;
   }
 
   const winnerByCheating = Object.values(state.players).find(
@@ -86,17 +95,90 @@ export const turn = (state: GameState, turn: Turn): GameState => {
   };
 };
 
-export const applyTurn = (state: GameState, turn: Turn): GameState => {
+export const winningPatterns: Coordinate[][] = [
+  // horizontal
+  [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+  ],
+  [
+    [0, 1],
+    [1, 1],
+    [2, 1],
+  ],
+  [
+    [0, 2],
+    [1, 2],
+    [2, 2],
+  ],
+  // vertical
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+  ],
+  [
+    [1, 0],
+    [1, 1],
+    [1, 2],
+  ],
+  [
+    [2, 0],
+    [2, 1],
+    [2, 2],
+  ],
+  // slices
+  [
+    [0, 0],
+    [1, 1],
+    [2, 2],
+  ],
+  [
+    [0, 2],
+    [1, 1],
+    [2, 0],
+  ],
+];
+
+export const hasWinner = (
+  state: GameState
+): keyof GameState["players"] | null => {
+  const rows = winningPatterns.map((pattern) => {
+    return pattern.map(([x, y]) => state.state[y][x]);
+  });
+
+  const winningRow = rows.find(
+    (row) =>
+      row.every((slot) => slot === "o") || row.every((slot) => slot === "x")
+  );
+
+  if (winningRow && winningRow[0] === "x") return "challenger";
+  else if (winningRow && winningRow[0] === "o") return "challenged";
+
+  return null;
+};
+
+export const makeMove = (state: GameState, turn: Turn): GameState => {
   const [x, y] = turn.coord;
   const slot: Slot = state.players.challenger === turn.player ? "x" : "o";
-  return update(state, { [y]: { $splice: [x, 1, slot] } });
+  return update(state, {
+    type: { $set: "progressing" },
+    state: { [y]: { $splice: [[x, 1, slot]] } },
+  });
 };
 
 export const isPlayersTurn = (state: GameState, turn: Turn): Boolean => {
   const slots = state.state.flat();
-  const movesByChallenger = slots.filter((slot) => slot === "x");
-  const movesByChallenged = slots.filter((slot) => slot === "o");
+  const movesByChallenger = slots.filter((slot) => slot === "x").length;
+  const movesByChallenged = slots.filter((slot) => slot === "o").length;
   const turnBelongsTo: keyof GameState["players"] =
     movesByChallenged > movesByChallenger ? "challenger" : "challenged";
+  // console.log({
+  //   turn: turn.player,
+  //   movesByChallenger,
+  //   movesByChallenged,
+  //   turnBelongsTo,
+  // });
   return turn.player === state.players[turnBelongsTo];
 };

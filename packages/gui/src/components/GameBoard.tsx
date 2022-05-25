@@ -40,7 +40,9 @@ export const GameBoard = (props: GameBoardProps) => {
           </Flex>
         ))}
       </Box>
-      <Text>Next turn: {props.game.players[GS.getPlayerTurn(props.game)]}</Text>
+      <Text>
+        <b>Next turn:</b> {props.game.players[GS.getPlayerTurn(props.game)]}
+      </Text>
     </Box>
   )
 }

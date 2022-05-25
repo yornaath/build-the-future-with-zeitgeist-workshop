@@ -19,10 +19,7 @@ export const chakraTheme = extendTheme({
     },
   },
   fonts: {
-    brand: "'Pacifico', cursive",
-    heading: `Circular Std`,
-    body: `Circular Std`,
-    mono: `Circular Std`,
+    zeitgeist: "font-family: 'Condiment', cursive;",
   },
   global: {},
   components: {

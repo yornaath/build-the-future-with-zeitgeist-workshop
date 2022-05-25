@@ -8,4 +8,6 @@
 .DS_Store
 
 node_modules
+
+.turbo
 #.pnp.*

@@ -1,4 +1,8 @@
-import { CategoryMetadata, DecodedMarketMetadata } from '@zeitgeistpm/sdk/dist/types'
+import {
+  CategoryMetadata,
+  DecodedMarketMetadata,
+  MarketDisputeMechanism,
+} from '@zeitgeistpm/sdk/dist/types'
 import ms from 'ms'
 import {
   Button,
@@ -73,9 +77,9 @@ export const NewGameButton = () => {
       ],
     }
 
-    const oracle = 'ORACLE'
+    const oracle = 'dE12VaHKNrQWGT2PzPdSQupbn5DyKi89KKrfm6Tq5SJzE8Mpc'
     const period = { timestamp: [Date.now(), Date.now() + ms('5 minutes')] }
-    const mdm = { Authorized: 1 }
+    const mdm: MarketDisputeMechanism = { Authorized: 1 }
     const baseAssetAmount = '1000000'
     const amts = ['1000000']
     const wts = ['1000000']

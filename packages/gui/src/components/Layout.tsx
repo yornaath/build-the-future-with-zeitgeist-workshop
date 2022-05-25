@@ -6,7 +6,7 @@ export const Layout = () => {
   return (
     <Box>
       <main>
-        <Container maxW="2xl" py={20}>
+        <Container maxW="2xl" py={28}>
           <Outlet />
         </Container>
         <Flex w="full" justifyContent={'center'} position={'fixed'} bottom="4" left="4">

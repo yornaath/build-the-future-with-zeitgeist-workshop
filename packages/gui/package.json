@@ -1,5 +1,5 @@
 {
-  "name": "vite-template-solid",
+  "name": "@tick-tack-block/gui",
   "version": "0.0.0",
   "description": "",
   "scripts": {
@@ -19,7 +19,6 @@
     "vite": "^2.9.9"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.1.0",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@nanostores/persistent": "^0.5.2",

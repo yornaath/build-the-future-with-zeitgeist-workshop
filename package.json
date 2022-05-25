@@ -1,8 +1,7 @@
 {
-  "name": "workshop",
+  "name": "tick-tack-block",
   "packageManager": "yarn@3.2.0",
   "workspaces": [
-    "apps/*",
     "packages/*"
   ]
 }

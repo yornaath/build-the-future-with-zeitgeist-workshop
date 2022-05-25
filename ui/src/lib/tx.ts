@@ -1,15 +1,4 @@
 import { ISubmittableResult, IEventRecord } from '@polkadot/types/types'
-import { useToast } from '@chakra-ui/react'
-;(window as any).pop = () => {
-  const toast = useToast()
-  toast({
-    title: 'Account created.',
-    description: "We've created your account for you.",
-    status: 'success',
-    duration: 9000,
-    isClosable: true,
-  })
-}
 
 type GenericCallback = (...args: any[]) => void
 

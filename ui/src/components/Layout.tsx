@@ -1,4 +1,4 @@
-import { Box, Container } from '@chakra-ui/react'
+import { Box, Container, Flex } from '@chakra-ui/react'
 import { Outlet } from 'react-router-dom'
 import AccountSelector from './AccountSelector'
 
@@ -6,12 +6,12 @@ export const Layout = () => {
   return (
     <Box>
       <main>
-        <Container maxW="6xl">
+        <Container maxW="2xl" py={20}>
           <Outlet />
         </Container>
-        <Box position={'fixed'} bottom="4" left="4">
+        <Flex w="full" justifyContent={'center'} position={'fixed'} bottom="4" left="4">
           <AccountSelector />
-        </Box>
+        </Flex>
       </main>
     </Box>
   )

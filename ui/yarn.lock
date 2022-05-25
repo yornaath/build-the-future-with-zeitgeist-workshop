@@ -5984,6 +5984,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-hook-form@npm:^7.31.2":
+  version: 7.31.2
+  resolution: "react-hook-form@npm:7.31.2"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18
+  checksum: 8a6b0ab7cb893adfbdec6340c6e4c5a702e34948659f67d37dde918ad3f6c1e6f3245e29030453482698dc33b6a48b7bc10d449ecec27997e41794ba5ccd8611
+  languageName: node
+  linkType: hard
+
+"react-icons@npm:^4.3.1":
+  version: 4.3.1
+  resolution: "react-icons@npm:4.3.1"
+  peerDependencies:
+    react: "*"
+  checksum: 2cc608acdd3e906aa3aaee290b8398220639677c949382d86e554020e5dab6a9f1ed7484418aa5272cb5c5c018e1fc9a323d433d901697a76530029f9ecb1263
+  languageName: node
+  linkType: hard
+
 "react-is@npm:^16.13.1, react-is@npm:^16.7.0":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
@@ -7000,6 +7018,8 @@ __metadata:
     ramda: ^0.28.0
     react: ^18.1.0
     react-dom: ^18.1.0
+    react-hook-form: ^7.31.2
+    react-icons: ^4.3.1
     react-query: ^3.39.0
     react-router-dom: ^6.3.0
     rollup-plugin-node-polyfills: ^0.2.1

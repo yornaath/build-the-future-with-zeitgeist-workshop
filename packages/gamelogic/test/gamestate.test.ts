@@ -1,40 +1,26 @@
 import * as GS from "../src/gamestate";
 import * as GB from "../src/gameboard";
-import { challenged, challenger, moves } from "./fixtures";
-
-const createFreshState = () => {
-  const state: GS.GameState = {
-    type: "fresh",
-    players: {
-      challenger,
-      challenged,
-    },
-    state: GB.empty(),
-    events: [],
-  };
-
-  return state;
-};
+import { challenged, challenger, createFreshState, moves } from "./fixtures";
 
 describe("GameState", () => {
   test("Challenged should win if challenger makes the first move.", () => {
-    const state = createFreshState();
-    const next = GS.turn(state, { player: challenger, coord: [1, 1] });
-    expect(next.type).toBe("finished");
-    expect((next as GS.FinishedGame).winner).toBe(challenged);
+    let state = createFreshState();
+    state = GS.turn(state, { player: challenger, coord: [1, 1] });
+    expect(state.type).toBe("finished");
+    expect((state as GS.FinishedGame).winner).toBe(challenged);
   });
 
   test("General moves", () => {
-    const state = createFreshState();
+    let state = createFreshState();
 
-    let next = GS.turn(state, { player: challenged, coord: [0, 0] });
-    expect(next.type).toBe("progressing");
+    state = GS.turn(state, { player: challenged, coord: [0, 0] });
+    expect(state.type).toBe("progressing");
 
-    next = GS.turn(next, { player: challenger, coord: [1, 0] });
-    next = GS.turn(next, { player: challenged, coord: [2, 1] });
-    next = GS.turn(next, { player: challenger, coord: [1, 2] });
+    state = GS.turn(state, { player: challenger, coord: [1, 0] });
+    state = GS.turn(state, { player: challenged, coord: [2, 1] });
+    state = GS.turn(state, { player: challenger, coord: [1, 2] });
 
-    expect(next.state).toStrictEqual([
+    expect(state.state).toStrictEqual([
       ["o", "x", null],
       [null, null, "o"],
       [null, "x", null],
@@ -43,7 +29,7 @@ describe("GameState", () => {
 
   test("Winning moves", () => {
     for (const [start, turn, end] of moves) {
-      const state: GS.GameState = {
+      let state: GS.GameState = {
         type: "progressing",
         players: {
           challenger,
@@ -53,12 +39,33 @@ describe("GameState", () => {
         events: [],
       };
 
-      const next = GS.turn(state, turn);
+      state = GS.turn(state, turn);
 
-      expect(next.state).toStrictEqual(end);
+      expect(state.state).toStrictEqual(end);
 
-      expect(next.type).toBe("finished");
-      expect((next as GS.FinishedGame).winner).toBe(turn.player);
+      expect(state.type).toBe("finished");
+      expect((state as GS.FinishedGame).winner).toBe(turn.player);
     }
+  });
+
+  test("Opponent should win when player makes to subsequent moves", () => {
+    let state = createFreshState();
+
+    state = GS.turn(state, { player: challenged, coord: [0, 0] });
+    state = GS.turn(state, { player: challenged, coord: [0, 1] });
+
+    expect(state.events.filter((e) => e.match("out of turn"))?.length).toBe(1);
+    expect(state.type).toBe("finished");
+    expect((state as GS.FinishedGame).winner).toBe(state.players.challenger);
+
+    state = createFreshState();
+
+    state = GS.turn(state, { player: challenged, coord: [0, 0] });
+    state = GS.turn(state, { player: challenger, coord: [0, 1] });
+    state = GS.turn(state, { player: challenger, coord: [0, 2] });
+
+    expect(state.events.filter((e) => e.match("out of turn"))?.length).toBe(1);
+    expect(state.type).toBe("finished");
+    expect((state as GS.FinishedGame).winner).toBe(state.players.challenged);
   });
 });

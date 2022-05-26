@@ -1,0 +1,61 @@
+version: "3.8"
+
+services:
+
+  referee:
+    depends_on:
+      - mongodb
+    build: ./packages/referee
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      - MONGODB_HOST=mongodb
+      - MONGODB_USER=$MONGODB_USER
+      - MONGODB_PASSWORD=$MONGODB_PASSWORD
+      - MONGODB_DATABASE=avatar
+      - MONGODB_DOCKER_PORT=$MONGODB_DOCKER_PORT
+    stdin_open: true
+    tty: true
+    networks:
+      - tick-tack-zeitgeist-network
+
+  gui:
+    depends_on:
+      - referee
+    build: ./packages/gui
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - "127.0.0.1:$GUI_LOCAL_PORT:$GUI_LOCAL_PORT"
+    volumes:
+      - ./node_modules:/usr/src/app/node_modules
+      - ./packages:/usr/src/app/packages
+
+    stdin_open: true
+    tty: true
+    networks:
+      - tick-tack-zeitgeist-network
+
+  mongodb:
+    image: mongo:5.0.6
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      - ENV=$ENV
+      - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
+    ports:
+      - "127.0.0.1:$MONGODB_LOCAL_PORT:$MONGODB_DOCKER_PORT"
+    volumes:
+      - db:/data/db
+    networks:
+      - tick-tack-zeitgeist-network
+
+  
+
+networks:
+  tick-tack-zeitgeist-network:
+    driver: bridge
+
+volumes:
+  db:

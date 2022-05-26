@@ -1,14 +1,16 @@
 {
+  "include": ["./src"],
+  "exclude": ["dist","node_modules"],
   "compilerOptions": {
     "strict": true,
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "node",
+    "target": "ES2019",
+    "module": "CommonJS",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "jsx": "preserve",
-    "types": ["vite/client"],
-    "noEmit": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "moduleResolution": "node",
+    "baseUrl": "./src",
+    "outDir": "./dist",
   }
 }

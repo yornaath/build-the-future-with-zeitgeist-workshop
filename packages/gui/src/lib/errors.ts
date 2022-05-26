@@ -6,7 +6,7 @@ export const getTransactionError = (
   errorIndex: number,
 ): string => {
   if (!sdk.errorTable) {
-    return ''
+    return `Transaction failed due to unknown reasons`
   }
 
   const entry = sdk.errorTable.getEntry(groupIndex, errorIndex)

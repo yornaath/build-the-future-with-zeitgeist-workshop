@@ -5,7 +5,8 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "build": "turbo run build"
   },
   "devDependencies": {
     "turbo": "^1.2.13"

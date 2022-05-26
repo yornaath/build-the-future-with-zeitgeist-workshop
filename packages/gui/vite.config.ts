@@ -14,7 +14,7 @@ export default defineConfig({
     NodeModulesPolyfillPlugin(),
   ],
   server: {
-    port: 3007,
+    port: 3002,
   },
   optimizeDeps: {
     esbuildOptions: {
@@ -40,17 +40,6 @@ export default defineConfig({
         // used during production bundling
         rollupNodePolyFill(),
       ],
-    },
-  },
-  resolve: {
-    alias: {
-      events: 'rollup-plugin-node-polyfills/polyfills/events',
-      stream: 'rollup-plugin-node-polyfills/polyfills/stream',
-      http: 'rollup-plugin-node-polyfills/polyfills/http',
-      url: 'rollup-plugin-node-polyfills/polyfills/url',
-      querystring: 'rollup-plugin-node-polyfills/polyfills/querystring',
-      process: 'rollup-plugin-node-polyfills/polyfills/process',
-      punycode: 'rollup-plugin-node-polyfills/polyfills/punycode',
     },
   },
 })

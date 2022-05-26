@@ -11,20 +11,21 @@ export type Event =
 export const tail = async (
   api: ApiPromise,
   nr: number,
-  cb: (events: Event[], block: SignedBlock) => void
+  cb: (events: Event[], block: SignedBlock) => Promise<void>
 ): Promise<VoidFn> => {
   const [block, last] = await blockAt(api, nr);
   if (last) {
     const unsub = await api.rpc.chain.subscribeFinalizedHeads((header) => {
-      api.rpc.chain.getBlock(header.hash).then(async (block) => {
+      console.log("tailed");
+      return api.rpc.chain.getBlock(header.hash).then(async (block) => {
         const events = findBlockEvents(api, block);
-        return cb(events, block);
+        return await cb(events, block);
       });
     });
     return unsub;
   } else if (block) {
     const events = findBlockEvents(api, block);
-    cb(events, block);
+    await cb(events, block);
     return tail(api, nr + 1, cb);
   }
   return () => null;

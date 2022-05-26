@@ -32,9 +32,10 @@ import * as wallet from '../state/wallet'
 import { web3FromAddress } from '@polkadot/extension-dapp'
 import { extrinsicCallback } from '../lib/tx'
 import { getTransactionError } from '../lib/errors'
+import { ZTG } from '../lib/ztg'
+import { weigh } from '../lib/weights'
 
 export type GameForm = {
-  ammount: number
   opponent: string
 }
 
@@ -51,13 +52,14 @@ export const NewGameButton = () => {
     formState: { errors },
   } = useForm<GameForm>({
     defaultValues: {
-      ammount: 10,
       opponent: '',
     },
   })
 
   const onNewGameSubmitted = async (game: GameForm) => {
-    const metadata: DecodedMarketMetadata = {
+    const metadata: DecodedMarketMetadata & {
+      categories: CategoryMetadata[]
+    } = {
       question: 'Who will winn?',
       description: 'FIGHT!',
       slug: `tick-tack-block-${shortenAddress(selectedAccount)}-${shortenAddress(
@@ -77,14 +79,15 @@ export const NewGameButton = () => {
       ],
     }
 
+    const ammount = (6 * ZTG).toString()
+
     const oracle = 'dE12VaHKNrQWGT2PzPdSQupbn5DyKi89KKrfm6Tq5SJzE8Mpc'
     const period = { timestamp: [Date.now(), Date.now() + ms('5 minutes')] }
-    const mdm: MarketDisputeMechanism = { Authorized: 1 }
-    const baseAssetAmount = '1000000'
-    const amts = ['1000000']
-    const wts = ['1000000']
+    const mdm: MarketDisputeMechanism = { Authorized: 0 }
+    const baseAssetAmount = ammount
+    const amts = [ammount, ammount]
     const marketType = { Categorical: 2 }
-
+    const wts = weigh(metadata)
     const injected = await web3FromAddress(selectedAccount)
     const extSigner = { address: selectedAccount, signer: injected.signer }
 
@@ -142,16 +145,6 @@ export const NewGameButton = () => {
 
             <ModalBody>
               <Box>
-                <Box mb="4">
-                  <FormLabel display={'flex'}>
-                    <b>Ammount</b> <Text color="gray.500">(pool liquidity)</Text>
-                  </FormLabel>
-                  <InputGroup>
-                    <Input {...register('ammount')} type="number" />
-                    <InputRightAddon children={<b>ZBS</b>} />
-                  </InputGroup>
-                </Box>
-
                 <Box mb="4">
                   <FormLabel display={'flex'}>
                     <b>Opponent</b> <Text color="gray.500">(address)</Text>

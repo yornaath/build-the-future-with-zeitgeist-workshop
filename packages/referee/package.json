@@ -4,6 +4,7 @@
   "dependencies": {
     "@polkadot/api": "^8.5.1",
     "@polkadot/types": "^8.5.1",
+    "cids": "^1.1.9",
     "copy-webpack-plugin": "^11.0.0",
     "webpack": "^5.72.1"
   },

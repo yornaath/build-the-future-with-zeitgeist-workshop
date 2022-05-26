@@ -3,6 +3,24 @@ import * as GB from "../src/gameboard";
 import { challenged, challenger, createFreshState, moves } from "./fixtures";
 
 describe("GameState", () => {
+  test("Full game.", () => {
+    let state = createFreshState();
+
+    state = GS.turn(state, { player: challenged, coord: [0, 0] });
+    state = GS.turn(state, { player: challenger, coord: [1, 2] });
+    state = GS.turn(state, { player: challenged, coord: [1, 1] });
+    state = GS.turn(state, { player: challenger, coord: [0, 1] });
+    state = GS.turn(state, { player: challenged, coord: [2, 2] });
+
+    expect(state.type).toBe("finished");
+
+    expect(state.state).toStrictEqual([
+      ["o", null, null],
+      ["x", "o", null],
+      [null, "x", "o"],
+    ]);
+  });
+
   test("Challenged should win if challenger makes the first move.", () => {
     let state = createFreshState();
     state = GS.turn(state, { player: challenger, coord: [1, 1] });

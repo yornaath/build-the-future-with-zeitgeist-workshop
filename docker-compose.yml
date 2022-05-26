@@ -2,6 +2,15 @@ version: "3.8"
 
 services:
 
+  # zeitgeist:
+  #   image: zeitgeistpm/zeitgeist-node
+  #   restart: unless-stopped
+  #   ports:
+  #     - "127.0.0.1:9944:9944"
+  #   expose:
+  #     - 9944
+  #   command: --dev --ws-external
+
   referee:
     depends_on:
       - mongodb

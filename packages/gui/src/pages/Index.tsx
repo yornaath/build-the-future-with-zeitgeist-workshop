@@ -22,8 +22,8 @@ export const IndexPage = () => {
             },
             state: [
               [null, 'o', null],
-              [null, null, 'o'],
-              ['x', 'x', null],
+              ['o', 'x', 'o'],
+              ['x', 'x', 'o'],
             ],
             events: [],
           }}

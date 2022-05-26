@@ -164,6 +164,7 @@ export const makeMove = (state: GameState, turn: Turn): GameState => {
   const slot: Slot = state.players.challenger === turn.player ? "x" : "o";
   return update(state, {
     type: { $set: "progressing" },
+    events: { $push: [`${slot} put in [${x}, ${y}]`] },
     state: { [y]: { $splice: [[x, 1, slot]] } },
   });
 };

@@ -2727,6 +2727,7 @@ __metadata:
   dependencies:
     "@polkadot/api": ^8.5.1
     "@polkadot/types": ^8.5.1
+    cids: ^1.1.9
     copy-webpack-plugin: ^11.0.0
     ts-loader: ^9.3.0
     ts-node: ^10.8.0
@@ -4207,7 +4208,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cids@npm:^1.0.0, cids@npm:^1.1.5":
+"cids@npm:^1.0.0, cids@npm:^1.1.5, cids@npm:^1.1.9":
   version: 1.1.9
   resolution: "cids@npm:1.1.9"
   dependencies:

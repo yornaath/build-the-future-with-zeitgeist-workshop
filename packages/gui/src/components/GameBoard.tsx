@@ -122,9 +122,29 @@ export const GameBoard = (props: GameBoardProps) => {
             <Text fontWeight={'bold'} flex={1}>
               Challenger(<b>X</b>):
             </Text>
-            <Tooltip label="This players turn.">
+            <Tooltip
+              backgroundColor={
+                selectedAccount === props.game.players.challenger
+                  ? 'seer.500'
+                  : 'gray.800'
+              }
+              label={
+                selectedAccount === props.game.players.challenger
+                  ? 'Your turn!'
+                  : 'Other players turn'
+              }>
               {GS.getPlayerTurn(props.game) === 'challenger' ? (
-                <Box mr={2} background={'seer.500'} h="3" w="3" rounded={'full'} />
+                <Box
+                  mr={2}
+                  background={
+                    selectedAccount === props.game.players.challenger
+                      ? '#ac2dba'
+                      : '#1a1a1a'
+                  }
+                  h="3"
+                  w="3"
+                  rounded={'full'}
+                />
               ) : (
                 ''
               )}
@@ -135,9 +155,29 @@ export const GameBoard = (props: GameBoardProps) => {
             <Text fontWeight={'bold'} flex={1}>
               Challenged(<b>O</b>):{' '}
             </Text>
-            <Tooltip label="This players turn.">
+            <Tooltip
+              backgroundColor={
+                selectedAccount === props.game.players.challenged
+                  ? 'seer.500'
+                  : 'gray.800'
+              }
+              label={
+                selectedAccount === props.game.players.challenged
+                  ? 'Your turn'
+                  : 'Other players turn'
+              }>
               {GS.getPlayerTurn(props.game) === 'challenged' ? (
-                <Box ml={2} background={'seer.500'} h="3" w="3" rounded={'full'} />
+                <Box
+                  ml={2}
+                  background={
+                    selectedAccount === props.game.players.challenged
+                      ? '#ac2dba'
+                      : '#1a1a1a'
+                  }
+                  h="3"
+                  w="3"
+                  rounded={'full'}
+                />
               ) : (
                 ''
               )}

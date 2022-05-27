@@ -2,19 +2,27 @@ version: "3.8"
 
 services:
 
-  # zeitgeist:
-  #   image: zeitgeistpm/zeitgeist-node
-  #   restart: unless-stopped
-  #   ports:
-  #     - "127.0.0.1:9944:9944"
-  #   expose:
-  #     - 9944
-  #   command: --dev --ws-external
+  gui:
+    depends_on:
+      - referee
+    build: ./apps/gui
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - "127.0.0.1:$GUI_LOCAL_PORT:$GUI_LOCAL_PORT"
+    volumes:
+      - ./node_modules:/usr/src/app/node_modules
+      - ./packages:/usr/src/app/packages
+
+    stdin_open: true
+    tty: true
+    networks:
+      - tick-tack-zeitgeist-network
 
   referee:
     depends_on:
       - mongodb
-    build: ./packages/referee
+    build: ./apps/referee
     restart: unless-stopped
     env_file: ./.env
     environment:
@@ -26,23 +34,6 @@ services:
       - REFEREE_API_PORT=$REFEREE_API_PORT
     ports:
       - "127.0.0.1:$REFEREE_API_PORT:$REFEREE_API_PORT"
-    stdin_open: true
-    tty: true
-    networks:
-      - tick-tack-zeitgeist-network
-
-  gui:
-    depends_on:
-      - referee
-    build: ./packages/gui
-    restart: unless-stopped
-    env_file: ./.env
-    ports:
-      - "127.0.0.1:$GUI_LOCAL_PORT:$GUI_LOCAL_PORT"
-    volumes:
-      - ./node_modules:/usr/src/app/node_modules
-      - ./packages:/usr/src/app/packages
-
     stdin_open: true
     tty: true
     networks:

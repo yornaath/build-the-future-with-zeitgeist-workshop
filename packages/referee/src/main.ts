@@ -4,10 +4,11 @@ import * as eventprocessor from "./eventprocessor";
 import * as api from "./api";
 
 const main = async () => {
-  const [db, client] = await DB.connect();
+  const [db] = await DB.connect();
   const sdk = await SDK.initialize();
-  eventprocessor.process(db, sdk);
+
   api.serve(db, sdk);
+  eventprocessor.process(db, sdk);
 };
 
 main();

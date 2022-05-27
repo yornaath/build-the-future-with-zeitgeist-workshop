@@ -13,7 +13,7 @@ import { blockNumberOf } from "./util/substrate";
 import { readMultiHash } from "./util/ipfs";
 
 export const process = async (db: Db, sdk: SDK) => {
-  const cursor = await blockcursor.cursor(db, sdk); // 1341103; // 1339946; //
+  const cursor = await blockcursor.cursor(db, sdk);
 
   await tail(sdk, cursor, async (events, block) => {
     const blockNumber = blockNumberOf(block);
@@ -52,8 +52,10 @@ export const process = async (db: Db, sdk: SDK) => {
           const existingGame = await game.get(db, event.slug);
           if (existingGame) {
             const nextstate = GS.turn(existingGame.state, event.turn);
+
             console.log(blockNumber, "turn", event.slug);
             console.log(nextstate);
+
             await game.put(
               db,
               event.slug,

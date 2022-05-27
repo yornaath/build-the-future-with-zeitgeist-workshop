@@ -50,7 +50,7 @@ export const tail = async (
 
 /**
  *
- * Extracts the relevant game events from the block extrinsics
+ * Extracts the relevant game events from the block events and extrinsics
  *
  * @param api ApiProise
  * @param block SignedBlock
@@ -116,45 +116,4 @@ export const parseBlockEvents = async (
     .filter((event): event is GameEvent => Boolean(event));
 
   return events.flat();
-
-  // const events: GameEvent[] = blockjson.block.extrinsics
-  //   .map((ex: string) => {
-  //     const tx = api.tx(ex);
-  //     const txjson: any = tx.toHuman();
-
-  //     if (!txjson.isSigned) return null;
-
-  //     if (txjson.method.method == "remark") {
-  //       const signer = txjson.signer.Id;
-  //       console.log("------RMRK EVENT-----")
-
-  //       try {
-  //         const json = JSON.parse(txjson.method.args.remark);
-  //         if (json && "type" in json) {
-  //           if (json.type === "turn") {
-  //             return {
-  //               ...json,
-  //               turn: {
-  //                 ...json.turn,
-  //                 blockNumber: blockNumberOf(block),
-  //                 player: signer,
-  //               },
-  //             };
-  //           }
-  //           return json;
-  //         }
-  //       } catch (error) {
-  //         return null;
-  //       }
-  //     }
-
-  //     if (txjson.method.method === "createCpmmMarketAndDeployAssets") {
-  //       return { type: "newgame", market: txjson.method.args };
-  //     }
-
-  //     return null;
-  //   })
-  //   .filter((event: object | null): event is GameEvent =>
-  //     Boolean(event && "type" in event)
-  //   );
 };

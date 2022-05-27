@@ -13,7 +13,7 @@ import { blockNumberOf } from "./util/substrate";
 import { readMultiHash } from "./util/ipfs";
 
 export const process = async (db: Db, sdk: SDK) => {
-  const cursor = 1341103; // 1339946; // await blockcursor.cursor(db, sdk);
+  const cursor = await blockcursor.cursor(db, sdk); // 1341103; // 1339946; //
 
   await tail(sdk, cursor, async (events, block) => {
     const blockNumber = blockNumberOf(block);

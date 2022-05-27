@@ -168,7 +168,7 @@ export const GameBoard = (props: GameBoardProps) => {
               }>
               {GS.getPlayerTurn(props.game) === 'challenged' ? (
                 <Box
-                  ml={2}
+                  mr={2}
                   background={
                     selectedAccount === props.game.players.challenged
                       ? '#ac2dba'

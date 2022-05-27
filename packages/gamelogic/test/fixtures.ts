@@ -22,7 +22,7 @@ export const moves: [GameBoard, Turn, GameBoard][] = [
       [null, "o", null],
       [null, "x", null],
     ],
-    { player: challenged, coord: [2, 2] },
+    { player: challenged, coord: [2, 2], blockNumber: 1 },
     [
       ["o", null, "x"],
       [null, "o", null],
@@ -35,7 +35,7 @@ export const moves: [GameBoard, Turn, GameBoard][] = [
       [null, "o", null],
       ["o", "x", null],
     ],
-    { player: challenged, coord: [2, 0] },
+    { player: challenged, coord: [2, 0], blockNumber: 1 },
     [
       [null, "x", "o"],
       [null, "o", null],
@@ -48,7 +48,7 @@ export const moves: [GameBoard, Turn, GameBoard][] = [
       [null, "x", "o"],
       [null, "o", null],
     ],
-    { player: challenger, coord: [0, 2] },
+    { player: challenger, coord: [0, 2], blockNumber: 1 },
     [
       ["o", null, "x"],
       [null, "x", "o"],
@@ -61,7 +61,7 @@ export const moves: [GameBoard, Turn, GameBoard][] = [
       [null, null, null],
       [null, "x", "x"],
     ],
-    { player: challenged, coord: [2, 0] },
+    { player: challenged, coord: [2, 0], blockNumber: 1 },
     [
       ["o", "o", "o"],
       [null, null, null],
@@ -74,7 +74,7 @@ export const moves: [GameBoard, Turn, GameBoard][] = [
       ["o", "o", null],
       [null, "x", "x"],
     ],
-    { player: challenged, coord: [2, 1] },
+    { player: challenged, coord: [2, 1], blockNumber: 1 },
     [
       [null, null, null],
       ["o", "o", "o"],
@@ -87,7 +87,7 @@ export const moves: [GameBoard, Turn, GameBoard][] = [
       [null, "x", "x"],
       ["o", "o", null],
     ],
-    { player: challenged, coord: [2, 2] },
+    { player: challenged, coord: [2, 2], blockNumber: 1 },
     [
       [null, null, null],
       [null, "x", "x"],
@@ -100,7 +100,7 @@ export const moves: [GameBoard, Turn, GameBoard][] = [
       ["o", "x", null],
       [null, null, null],
     ],
-    { player: challenged, coord: [0, 2] },
+    { player: challenged, coord: [0, 2], blockNumber: 1 },
     [
       ["o", "x", null],
       ["o", "x", null],
@@ -113,7 +113,7 @@ export const moves: [GameBoard, Turn, GameBoard][] = [
       [null, "o", "x"],
       [null, null, null],
     ],
-    { player: challenged, coord: [1, 2] },
+    { player: challenged, coord: [1, 2], blockNumber: 1 },
     [
       [null, "o", "x"],
       [null, "o", "x"],
@@ -126,7 +126,7 @@ export const moves: [GameBoard, Turn, GameBoard][] = [
       [null, "x", "o"],
       [null, null, null],
     ],
-    { player: challenged, coord: [2, 2] },
+    { player: challenged, coord: [2, 2], blockNumber: 1 },
     [
       [null, "x", "o"],
       [null, "x", "o"],

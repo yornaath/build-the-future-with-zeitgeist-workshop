@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import * as wallet from './state/wallet'
 import { IndexPage } from './pages/Index'
 import { Layout } from './components/Layout'
+import { GamePage } from './pages/Game'
 
 const App = () => {
   const loaded = useStore(wallet.$loaded)
@@ -24,6 +25,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<IndexPage />} />
+          <Route path="/games/:slug" element={<GamePage />} />
         </Route>
       </Routes>
     </BrowserRouter>

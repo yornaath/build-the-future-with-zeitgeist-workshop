@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
-  "scripts": {},
   "dependencies": {
     "@polkadot/api": "^8.5.1",
     "@polkadot/types": "^8.5.1"

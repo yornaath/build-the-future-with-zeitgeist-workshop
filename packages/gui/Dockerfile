@@ -11,4 +11,4 @@ COPY . /usr/src/app
 
 RUN npm install -g serve
 
-CMD [ "serve", "-p", "3002", "./dist"]
+CMD [ "serve", "-s", "-p", "3002", "./dist"]

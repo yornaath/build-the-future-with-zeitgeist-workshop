@@ -26,3 +26,7 @@ export const put = async (
     { upsert }
   );
 };
+
+export const list = async (db: Db) => {
+  return db.collection<Game>("games").find().toArray();
+};

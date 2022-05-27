@@ -1,4 +1,4 @@
-import { Db, MongoClient, ClientSession } from "mongodb";
+import { Db, MongoClient } from "mongodb";
 
 const {
   MONGODB_USER,
@@ -19,10 +19,4 @@ export const connect = async (): Promise<[Db, MongoClient]> => {
   }
 
   return [db, client];
-};
-
-export const transactionOptions = {
-  readConcern: { level: "snapshot" },
-  writeConcern: { w: "majority" },
-  readPreference: "primary",
 };

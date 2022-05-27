@@ -1,6 +1,8 @@
 import { Box, Container, Flex, Image, Text } from '@chakra-ui/react'
 import { Outlet } from 'react-router-dom'
 import AccountSelector from './AccountSelector'
+import { GameList } from './GameList'
+import { NewGameButton } from './NewGameButton'
 
 export const Layout = () => {
   return (
@@ -27,8 +29,16 @@ export const Layout = () => {
           <Outlet />
         </Container>
         <Flex w="full" justifyContent={'center'} position={'fixed'} bottom="4" left="4">
-          <AccountSelector />
+          <Box>
+            <Flex justifyContent={'center'} mb={4}>
+              <NewGameButton />
+            </Flex>
+            <AccountSelector />
+          </Box>
         </Flex>
+        <Box position={'fixed'} right="0" top="0" bottom={0} w={'sm'}>
+          <GameList />
+        </Box>
       </main>
     </Box>
   )

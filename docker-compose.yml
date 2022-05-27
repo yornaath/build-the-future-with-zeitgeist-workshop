@@ -23,6 +23,9 @@ services:
       - MONGODB_PASSWORD=$MONGODB_PASSWORD
       - MONGODB_DATABASE=avatar
       - MONGODB_DOCKER_PORT=$MONGODB_DOCKER_PORT
+      - REFEREE_API_PORT=$REFEREE_API_PORT
+    ports:
+      - "127.0.0.1:$REFEREE_API_PORT:$REFEREE_API_PORT"
     stdin_open: true
     tty: true
     networks:

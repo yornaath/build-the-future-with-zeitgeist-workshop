@@ -27,6 +27,7 @@ export type GameStateBase = {
 
 export type Turn = {
   player: string;
+  blockNumber: number;
   coord: Coordinate;
 };
 
@@ -36,7 +37,7 @@ export const turn = (state: GameState, turn: Turn): GameState => {
       ...state,
       events: [
         ...state.events,
-        `${turn.player} tried to make a move, but isnt in the game. Ignored.`,
+        `${turn.blockNumber}: ${turn.player} tried to make a move, but isnt in the game. Ignored.`,
       ],
     };
   }
@@ -46,7 +47,7 @@ export const turn = (state: GameState, turn: Turn): GameState => {
       ...state,
       events: [
         ...state.events,
-        `${turn.player} tried to make a move when the game was finished`,
+        `${turn.blockNumber}: ${turn.player} tried to make a move when the game was finished`,
       ],
     };
   }
@@ -58,7 +59,7 @@ export const turn = (state: GameState, turn: Turn): GameState => {
       winner: state.players.challenged,
       events: [
         ...state.events,
-        `Challenger ${state.players.challenger} tried to make the first move, resulting is loss.`,
+        `${turn.blockNumber}: Challenger ${state.players.challenger} tried to make the first move, resulting is loss.`,
       ],
     };
   }
@@ -75,6 +76,10 @@ export const turn = (state: GameState, turn: Turn): GameState => {
         ...next,
         type: "finished",
         winner: state.players[winner],
+        events: [
+          ...next.events,
+          `${turn.blockNumber}: Winner ${state.players[winner]}`,
+        ],
       };
     }
     return next;
@@ -90,7 +95,7 @@ export const turn = (state: GameState, turn: Turn): GameState => {
     winner: winnerByCheating,
     events: [
       ...state.events,
-      `Player ${turn.player} tried to make a move out of turn, forfeiting the game.`,
+      `${turn.blockNumber}: Player ${turn.player} tried to make a move out of turn, forfeiting the game.`,
     ],
   };
 };
@@ -164,7 +169,7 @@ export const makeMove = (state: GameState, turn: Turn): GameState => {
   const slot: Slot = state.players.challenger === turn.player ? "x" : "o";
   return update(state, {
     type: { $set: "progressing" },
-    events: { $push: [`${slot} put in [${x}, ${y}]`] },
+    events: { $push: [`${turn.blockNumber}: ${slot} put in [${x}, ${y}]`] },
     state: { [y]: { $splice: [[x, 1, slot]] } },
   });
 };

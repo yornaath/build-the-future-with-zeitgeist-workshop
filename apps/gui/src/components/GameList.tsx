@@ -5,7 +5,7 @@ import { useQuery } from 'react-query'
 import type { Game } from '@tick-tack-block/referee/src/model/game'
 import { useStore } from '@nanostores/react'
 import * as wallet from '../state/wallet'
-import { shortenAddress } from '../lib/account'
+import { shortenAddress } from '@tick-tack-block/lib'
 
 export const GameList = () => {
   const games = useQuery<Game[]>(
@@ -32,6 +32,7 @@ export const GameList = () => {
 const GameItem = (props: { game: Game }) => {
   const selected = useStore(wallet.$selectedAccount)
   const { challenged, challenger } = props.game.state.players
+
   const isParticipating = challenger == selected || challenged == selected
 
   return (

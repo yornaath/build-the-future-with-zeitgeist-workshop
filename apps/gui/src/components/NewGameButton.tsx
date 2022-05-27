@@ -1,9 +1,9 @@
+import ms from 'ms'
 import {
   CategoryMetadata,
   DecodedMarketMetadata,
   MarketDisputeMechanism,
 } from '@zeitgeistpm/sdk/dist/types'
-import ms from 'ms'
 import {
   Button,
   Modal,
@@ -16,24 +16,21 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react'
+import { Box, FormLabel, Input, Text } from '@chakra-ui/react'
 import {
-  Box,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputRightAddon,
-  Text,
-} from '@chakra-ui/react'
+  shortenAddress,
+  isValid,
+  lastFour,
+  extrinsicCallback,
+  getTransactionError,
+  ZTG,
+  weigh,
+} from '@tick-tack-block/lib'
+import { web3FromAddress } from '@polkadot/extension-dapp'
 import { useForm } from 'react-hook-form'
-import { isValid, lastFour, shortenAddress } from '../lib/account'
 import { useStore } from '@nanostores/react'
 import { IoLogoGameControllerA } from 'react-icons/io'
 import * as wallet from '../state/wallet'
-import { web3FromAddress } from '@polkadot/extension-dapp'
-import { extrinsicCallback } from '../lib/tx'
-import { getTransactionError } from '../lib/errors'
-import { ZTG } from '../lib/ztg'
-import { weigh } from '../lib/weights'
 
 export type GameForm = {
   opponent: string
@@ -43,8 +40,8 @@ export const NewGameButton = () => {
   const sdk = useStore(wallet.$sdk)
   const selectedAccount = useStore(wallet.$selectedAccount)
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const {
     register,

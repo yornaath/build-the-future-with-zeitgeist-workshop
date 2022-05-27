@@ -11,6 +11,7 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react'
+import { shortenAddress } from '@tick-tack-block/lib'
 import { IoIosClose } from 'react-icons/io'
 import { BiCircle } from 'react-icons/bi'
 import { IoMdListBox } from 'react-icons/io'
@@ -18,7 +19,6 @@ import * as GS from '@tick-tack-block/gamelogic/src/gamestate'
 import * as GB from '@tick-tack-block/gamelogic/src/gameboard'
 import { useStore } from '@nanostores/react'
 import * as wallet from '../state/wallet'
-import { shortenAddress } from '../lib/account'
 
 export type GameBoardProps = {
   game: GS.GameState

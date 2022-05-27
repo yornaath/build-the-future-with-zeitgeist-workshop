@@ -1,5 +1,4 @@
 import * as GS from "../src/gamestate";
-import * as GB from "../src/gameboard";
 import { challenged, challenger, createFreshState, moves } from "./fixtures";
 
 describe("GameState", () => {

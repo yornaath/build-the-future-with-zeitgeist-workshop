@@ -3,6 +3,7 @@ import { Db } from "mongodb";
 import * as GS from "@tick-tack-block/gamelogic/src/gamestate";
 
 export type Game = {
+  marketId: string;
   slug: string;
   state: GS.GameState;
 };
@@ -14,12 +15,14 @@ export const get = async (db: Db, slug: string): Promise<Game | null> => {
 export const put = async (
   db: Db,
   slug: string,
+  marketId: string,
   game: GS.GameState,
   upsert: boolean
 ) => {
   return db.collection<Game>("games").findOneAndReplace(
     { slug },
     {
+      marketId,
       slug,
       state: game,
     },

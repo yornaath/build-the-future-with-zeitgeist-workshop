@@ -2754,6 +2754,7 @@ __metadata:
     "@fastify/cors": ^7.0.0
     "@polkadot/api": ^8.5.1
     "@polkadot/types": ^8.5.1
+    "@zeitgeistpm/types": ^0.5.2
     cids: ^1.1.9
     copy-webpack-plugin: ^11.0.0
     fastify: ^3.29.0

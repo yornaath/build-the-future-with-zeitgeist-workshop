@@ -31,9 +31,7 @@ export const GameList = () => {
 
 const GameItem = (props: { game: Game }) => {
   const selected = useStore(wallet.$selectedAccount)
-
   const { challenged, challenger } = props.game.state.players
-
   const isParticipating = challenger == selected || challenged == selected
 
   return (

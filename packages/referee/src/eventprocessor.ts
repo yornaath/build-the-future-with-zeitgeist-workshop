@@ -13,9 +13,9 @@ import { blockNumberOf } from "./util/substrate";
 import { readMultiHash } from "./util/ipfs";
 
 export const process = async (db: Db, sdk: SDK) => {
-  const cursor = 1339946; // await blockcursor.cursor(db, sdk);
+  const cursor = 1341103; // 1339946; // await blockcursor.cursor(db, sdk);
 
-  await tail(sdk.api, cursor, async (events, block) => {
+  await tail(sdk, cursor, async (events, block) => {
     const blockNumber = blockNumberOf(block);
 
     for (const event of events) {
@@ -23,7 +23,7 @@ export const process = async (db: Db, sdk: SDK) => {
         case "newgame":
           const metadata: DecodedMarketMetadata & {
             categories: CategoryMetadata;
-          } = JSON.parse(await readMultiHash(event.market.metadata.Sha3_384));
+          } = JSON.parse(await readMultiHash(event.market.metadata));
 
           const newgame: GS.FreshGame = {
             type: "fresh",
@@ -38,7 +38,13 @@ export const process = async (db: Db, sdk: SDK) => {
           console.log(blockNumber, "new game", metadata.slug);
           console.log(newgame);
 
-          await game.put(db, metadata.slug, newgame, true);
+          await game.put(
+            db,
+            metadata.slug,
+            event.market.marketId,
+            newgame,
+            true
+          );
 
           break;
 
@@ -48,7 +54,13 @@ export const process = async (db: Db, sdk: SDK) => {
             const nextstate = GS.turn(existingGame.state, event.turn);
             console.log(blockNumber, "turn", event.slug);
             console.log(nextstate);
-            await game.put(db, event.slug, nextstate, false);
+            await game.put(
+              db,
+              event.slug,
+              existingGame.marketId,
+              nextstate,
+              false
+            );
           }
           break;
       }

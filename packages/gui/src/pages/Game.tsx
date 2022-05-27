@@ -30,7 +30,7 @@ export const GamePage = () => {
   const onClickSlot = async (coord: GB.Coordinate) => {
     const injected = await web3FromAddress(selectedAccount)
     const extSigner = { address: selectedAccount, signer: injected.signer }
-    const tx = sdk.api.tx.system.remark(
+    const tx = sdk.api.tx.system.remarkWithEvent(
       JSON.stringify({
         type: 'turn',
         slug: params.slug,
@@ -49,10 +49,26 @@ export const GamePage = () => {
   return (
     <Flex justifyContent={'center'}>
       {game.data ? (
-        <GameBoard size={28} onClick={onClickSlot} game={game.data.state} />
+        <>
+          <Box mb={4}>
+            <GameBoard size={28} onClick={onClickSlot} game={game.data.state} />
+          </Box>
+          <Box>
+            <Betting game={game.data} />
+          </Box>
+        </>
       ) : (
         ''
       )}
     </Flex>
   )
+}
+
+const Betting = (props: { game: Game }) => {
+  const sdk = useStore(wallet.$sdk)
+  const selectedAccount = useStore(wallet.$selectedAccount)
+
+  sdk.models.fetchMarketData(1)
+
+  return <Box></Box>
 }

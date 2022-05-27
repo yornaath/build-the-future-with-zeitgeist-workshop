@@ -6,14 +6,14 @@ import {
 } from "@zeitgeistpm/sdk/dist/types";
 import * as GS from "@tick-tack-block/gamelogic/src/gamestate";
 import * as GB from "@tick-tack-block/gamelogic/src/gameboard";
-import * as blockcursor from "./model/blockcursor";
-import * as game from "./model/game";
+import * as Blockcursor from "./model/blockcursor";
+import * as Game from "./model/game";
 import { tail } from "./events";
 import { blockNumberOf } from "./util/substrate";
 import { readMultiHash } from "./util/ipfs";
 
 export const process = async (db: Db, sdk: SDK) => {
-  const cursor = await blockcursor.cursor(db, sdk);
+  const cursor = await Blockcursor.get(db, sdk);
 
   await tail(sdk, cursor, async (events, block) => {
     const blockNumber = blockNumberOf(block);
@@ -38,7 +38,7 @@ export const process = async (db: Db, sdk: SDK) => {
           console.log(blockNumber, "new game", metadata.slug);
           console.log(newgame);
 
-          await game.put(
+          await Game.put(
             db,
             metadata.slug,
             event.market.marketId,
@@ -49,25 +49,20 @@ export const process = async (db: Db, sdk: SDK) => {
           break;
 
         case "turn":
-          const existingGame = await game.get(db, event.slug);
-          if (existingGame) {
-            const nextstate = GS.turn(existingGame.state, event.turn);
+          const game = await Game.get(db, event.slug);
+
+          if (game) {
+            const nextstate = GS.turn(game.state, event.turn);
 
             console.log(blockNumber, "turn", event.slug);
             console.log(nextstate);
 
-            await game.put(
-              db,
-              event.slug,
-              existingGame.marketId,
-              nextstate,
-              false
-            );
+            await Game.put(db, event.slug, game.marketId, nextstate, false);
           }
           break;
       }
     }
 
-    await blockcursor.update(db, blockNumber);
+    await Blockcursor.update(db, blockNumber);
   });
 };

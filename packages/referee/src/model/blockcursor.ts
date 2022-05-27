@@ -2,7 +2,7 @@ import { Db, ClientSession } from "mongodb";
 import SDK from "@zeitgeistpm/sdk";
 import { blockNumberOf, latestBlock } from "@tick-tack-block/lib";
 
-export const cursor = async (db: Db, sdk: SDK) => {
+export const get = async (db: Db, sdk: SDK) => {
   const lastProcessedBlock = await db
     .collection("blockcursor")
     .findOne({ key: "blockcursor" });

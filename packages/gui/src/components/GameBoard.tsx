@@ -16,6 +16,8 @@ import { BiCircle } from 'react-icons/bi'
 import { IoMdListBox } from 'react-icons/io'
 import * as GS from '@tick-tack-block/gamelogic/src/gamestate'
 import * as GB from '@tick-tack-block/gamelogic/src/gameboard'
+import { useStore } from '@nanostores/react'
+import * as wallet from '../state/wallet'
 import { shortenAddress } from '../lib/account'
 
 export type GameBoardProps = {
@@ -25,6 +27,8 @@ export type GameBoardProps = {
 }
 
 export const GameBoard = (props: GameBoardProps) => {
+  const selectedAccount = useStore(wallet.$selectedAccount)
+
   return (
     <Box>
       <Flex justifyContent={'center'}>
@@ -45,9 +49,23 @@ export const GameBoard = (props: GameBoardProps) => {
                     h="full"
                     w="full">
                     {slot == 'x' ? (
-                      <IoIosClose color="#1a1a1a" size={120} />
+                      <IoIosClose
+                        color={
+                          selectedAccount === props.game.players.challenger
+                            ? '#ac2dba'
+                            : '#1a1a1a'
+                        }
+                        size={120}
+                      />
                     ) : slot === 'o' ? (
-                      <BiCircle color="#ac2dba" size={44} />
+                      <BiCircle
+                        color={
+                          selectedAccount === props.game.players.challenged
+                            ? '#ac2dba'
+                            : '#1a1a1a'
+                        }
+                        size={44}
+                      />
                     ) : (
                       ''
                     )}
@@ -79,8 +97,11 @@ export const GameBoard = (props: GameBoardProps) => {
                   <IoMdListBox size="20" />
                 </Box>
               </PopoverTrigger>
-              <PopoverContent outlineColor={'none'} boxShadow="none">
-                <PopoverArrow />
+              <PopoverContent
+                backgroundColor={'rgb(30,30,30)'}
+                color={'white'}
+                _focus={{ boxShadow: 'none' }}>
+                <PopoverArrow backgroundColor={'blackAlpha.800'} />
                 <PopoverCloseButton />
                 <PopoverHeader>
                   <b>Events</b>
@@ -98,17 +119,22 @@ export const GameBoard = (props: GameBoardProps) => {
         </Flex>
         <Box>
           <Flex alignItems={'center'}>
-            <b>Challenger:</b> {shortenAddress(props.game.players.challenger)}
+            <Text fontWeight={'bold'} flex={1}>
+              Challenger(<b>X</b>):
+            </Text>
             <Tooltip label="This players turn.">
               {GS.getPlayerTurn(props.game) === 'challenger' ? (
-                <Box ml={2} background={'seer.500'} h="3" w="3" rounded={'full'} />
+                <Box mr={2} background={'seer.500'} h="3" w="3" rounded={'full'} />
               ) : (
                 ''
               )}
             </Tooltip>
+            {shortenAddress(props.game.players.challenger)}
           </Flex>
           <Flex alignItems={'center'}>
-            <b>Challenged: </b> {shortenAddress(props.game.players.challenged)}
+            <Text fontWeight={'bold'} flex={1}>
+              Challenged(<b>O</b>):{' '}
+            </Text>
             <Tooltip label="This players turn.">
               {GS.getPlayerTurn(props.game) === 'challenged' ? (
                 <Box ml={2} background={'seer.500'} h="3" w="3" rounded={'full'} />
@@ -116,6 +142,7 @@ export const GameBoard = (props: GameBoardProps) => {
                 ''
               )}
             </Tooltip>
+            {shortenAddress(props.game.players.challenged)}
           </Flex>
         </Box>
       </Box>

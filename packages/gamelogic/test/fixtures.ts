@@ -9,7 +9,7 @@ export const createFreshState = (): GameState =>
     challenged,
   });
 
-export const moves: [GameBoard, Turn, GameBoard][] = [
+export const winningMoves: [GameBoard, Turn, GameBoard][] = [
   [
     [
       ["o", null, "x"],

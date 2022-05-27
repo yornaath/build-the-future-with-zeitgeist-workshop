@@ -1,5 +1,10 @@
 import * as GS from "../src/gamestate";
-import { challenged, challenger, createFreshState, moves } from "./fixtures";
+import {
+  challenged,
+  challenger,
+  createFreshState,
+  winningMoves,
+} from "./fixtures";
 
 describe("GameState", () => {
   test("Full game.", () => {
@@ -85,7 +90,7 @@ describe("GameState", () => {
   });
 
   test("Winning moves should result in finished with correct winner.", () => {
-    for (const [start, turn, end] of moves) {
+    for (const [start, turn, end] of winningMoves) {
       let state: GS.GameState = {
         type: "progressing",
         players: {

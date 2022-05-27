@@ -23,5 +23,6 @@ export const serve = async (db: Db, sdk: SDK) => {
     parseInt(process.env.REFEREE_API_PORT as string),
     "0.0.0.0"
   );
+
   console.log("server up");
 };

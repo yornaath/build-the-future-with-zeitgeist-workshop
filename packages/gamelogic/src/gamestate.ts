@@ -1,5 +1,5 @@
 import update from "immutability-helper";
-import { Coordinate, GameBoard, Slot } from "./gameboard";
+import { Coordinate, GameBoard, Slot, empty } from "./gameboard";
 
 export type GameState = FreshGame | ProgressingGame | FinishedGame;
 
@@ -30,6 +30,19 @@ export type Turn = {
   blockNumber: number;
   coord: Coordinate;
 };
+
+export const create = (
+  blockNumber: number,
+  players: {
+    challenger: string;
+    challenged: string;
+  }
+): FreshGame => ({
+  type: "fresh",
+  players,
+  state: empty(),
+  events: [`${blockNumber}: FIGHT!`],
+});
 
 export const turn = (state: GameState, turn: Turn): GameState => {
   if (!Object.values(state.players).includes(turn.player)) {

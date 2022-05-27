@@ -1,11 +1,10 @@
-import SDK from "@zeitgeistpm/sdk";
 import { Db } from "mongodb";
+import SDK from "@zeitgeistpm/sdk";
 import {
   DecodedMarketMetadata,
   CategoryMetadata,
 } from "@zeitgeistpm/sdk/dist/types";
 import * as GS from "@tick-tack-block/gamelogic/src/gamestate";
-import * as GB from "@tick-tack-block/gamelogic/src/gameboard";
 import * as Blockcursor from "./model/blockcursor";
 import * as Game from "./model/game";
 import { tail } from "./events";
@@ -25,15 +24,10 @@ export const process = async (db: Db, sdk: SDK) => {
             categories: CategoryMetadata;
           } = JSON.parse(await readMultiHash(event.market.metadata));
 
-          const newgame: GS.FreshGame = {
-            type: "fresh",
-            players: {
-              challenger: metadata.categories[0].name,
-              challenged: metadata.categories[1].name,
-            },
-            state: GB.empty(),
-            events: [`${blockNumber}: FIGHT!`],
-          };
+          const newgame = GS.create(blockNumber, {
+            challenger: metadata.categories[0].name,
+            challenged: metadata.categories[1].name,
+          });
 
           console.log(blockNumber, "new game", metadata.slug);
           console.log(newgame);
@@ -59,6 +53,7 @@ export const process = async (db: Db, sdk: SDK) => {
 
             await Game.put(db, event.slug, game.marketId, nextstate, false);
           }
+
           break;
       }
     }

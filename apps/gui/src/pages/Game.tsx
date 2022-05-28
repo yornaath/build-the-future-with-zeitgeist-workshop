@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom'
 import { GameBoard } from '../components/GameBoard'
 import { web3FromAddress } from '@polkadot/extension-dapp'
 import ms from 'ms'
+import { Market, Swap } from '@zeitgeistpm/sdk/dist/models'
 
 export const GamePage = () => {
   let params = useParams()
@@ -24,6 +25,26 @@ export const GamePage = () => {
     {
       enabled: Boolean(params.slug),
       refetchInterval: ms('3 seconds'),
+    },
+  )
+
+  const market = useQuery<Market>(
+    ['market', game.data?.marketId],
+    async () => {
+      return sdk.models.fetchMarketData(Number(game.data?.marketId))
+    },
+    {
+      enabled: Boolean(game.data?.marketId),
+    },
+  )
+
+  const pool = useQuery<Swap | null>(
+    ['pool', market.data?.marketId],
+    async () => {
+      return market.data?.getPool() || null
+    },
+    {
+      enabled: Boolean(market.data),
     },
   )
 
@@ -53,22 +74,10 @@ export const GamePage = () => {
           <Box mb={4}>
             <GameBoard size={28} onClick={onClickSlot} game={game.data.state} />
           </Box>
-          <Box>
-            <Betting game={game.data} />
-          </Box>
         </>
       ) : (
         ''
       )}
     </Flex>
   )
-}
-
-const Betting = (props: { game: Game }) => {
-  const sdk = useStore(wallet.$sdk)
-  const selectedAccount = useStore(wallet.$selectedAccount)
-
-  sdk.models.fetchMarketData(1)
-
-  return <Box></Box>
 }

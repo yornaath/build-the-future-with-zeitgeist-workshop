@@ -7,7 +7,6 @@ import type { Game } from '@tick-tack-block/referee/src/model/game'
 import { useStore } from '@nanostores/react'
 import * as wallet from '../state/wallet'
 import { shortenAddress } from '@tick-tack-block/lib'
-import { Market, Swap } from '@zeitgeistpm/sdk/dist/models'
 
 export const GameList = () => {
   const games = useQuery<Game[]>(
@@ -32,28 +31,10 @@ export const GameList = () => {
 }
 
 const GameItem = (props: { game: Game }) => {
-  const sdk = useStore(wallet.$sdk)
   const selected = useStore(wallet.$selectedAccount)
-
   const { challenged, challenger } = props.game.state.players
 
   const isParticipating = challenger == selected || challenged == selected
-
-  const { data } = useQuery<[Market, Swap | null]>(
-    ['assetpools', props.game.marketId],
-    async () => {
-      const market = await sdk.models.fetchMarketData(Number(props.game.marketId))
-      const pool = await market.getPool()
-      return [market, pool] as [Market, Swap | null]
-    },
-  )
-
-  const market = data?.[0]
-  const pool = data?.[1]
-
-  if (market && pool) {
-    console.log(market, pool)
-  }
 
   return (
     <Box

@@ -1,4 +1,4 @@
-import { Db } from "mongodb";
+import { Db, ClientSession } from "mongodb";
 import * as GS from "@tick-tack-block/gamelogic/src/gamestate";
 
 /**
@@ -27,7 +27,8 @@ export const put = async (
   slug: string,
   marketId: string,
   game: GS.GameState,
-  upsert: boolean
+  upsert: boolean,
+  session?: ClientSession
 ) => {
   return db.collection<GameAggregate>("games").findOneAndReplace(
     { slug },
@@ -36,7 +37,7 @@ export const put = async (
       slug,
       state: game,
     },
-    { upsert }
+    { upsert, session }
   );
 };
 

@@ -18,7 +18,7 @@ export type GameEvent =
  *
  * @param api ApiProise
  * @param block SignedBlock
- * @returns Event[]
+ * @returns GameEvent[]
  */
 export const parseBlockEvents = async (
   sdk: SDK,

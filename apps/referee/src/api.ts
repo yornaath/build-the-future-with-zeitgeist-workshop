@@ -4,6 +4,15 @@ import { Db } from "mongodb";
 import SDK from "@zeitgeistpm/sdk";
 import * as game from "./model/game/game";
 
+/**
+ *
+ * Api servert to serve the list of aggregated game,
+ * And game by its slug
+ *
+ * @param db mongodb.Db
+ * @param sdk @zeitgeistpm/sdk
+ */
+
 export const serve = async (db: Db, sdk: SDK) => {
   const server = fastify();
 

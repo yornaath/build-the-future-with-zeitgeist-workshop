@@ -58,6 +58,6 @@ export const run = async (db: Db, sdk: SDK) => {
       }
     }
 
-    await Cursor.update(db, "games", blockNumber);
+    await Cursor.put(db, "games", blockNumber);
   });
 };

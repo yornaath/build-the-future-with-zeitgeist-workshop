@@ -35,7 +35,8 @@ export const get = async (db: Db, sdk: SDK, key: string) => {
  * @param blockNumber number
  * @param session mongodb.ClientSession - for transactions. Unimplemented
  */
-export const update = async (
+
+export const put = async (
   db: Db,
   key: string,
   blockNumber: number,

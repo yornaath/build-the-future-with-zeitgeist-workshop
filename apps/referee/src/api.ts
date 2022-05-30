@@ -2,7 +2,7 @@ import fastify from "fastify";
 import cors from "@fastify/cors";
 import { Db } from "mongodb";
 import SDK from "@zeitgeistpm/sdk";
-import * as game from "./model/game";
+import * as game from "./model/game/aggregate";
 
 export const serve = async (db: Db, sdk: SDK) => {
   const server = fastify();

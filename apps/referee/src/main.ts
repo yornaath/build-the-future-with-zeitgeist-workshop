@@ -1,5 +1,5 @@
 import SDK from "@zeitgeistpm/sdk";
-import * as DB from "./model/db";
+import * as DB from "./db";
 import * as eventprocessor from "./eventprocessor";
 import * as api from "./api";
 

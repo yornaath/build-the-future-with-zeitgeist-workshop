@@ -3,13 +3,13 @@ import React from 'react'
 import { Box, Flex, Text } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
 import { useQuery } from 'react-query'
-import type { Game } from '@tick-tack-block/referee/src/model/game'
+import type { GameAggregate } from '@tick-tack-block/referee/src/model/game'
 import { useStore } from '@nanostores/react'
 import * as wallet from '../state/wallet'
 import { shortenAddress } from '@tick-tack-block/lib'
 
 export const GameList = () => {
-  const games = useQuery<Game[]>(
+  const games = useQuery<GameAggregate[]>(
     'games',
     async () => {
       return fetch('http://localhost:3000/games').then(res => res.json())
@@ -30,7 +30,7 @@ export const GameList = () => {
   )
 }
 
-const GameItem = (props: { game: Game }) => {
+const GameItem = (props: { game: GameAggregate }) => {
   const selected = useStore(wallet.$selectedAccount)
   const { challenged, challenger } = props.game.state.players
 

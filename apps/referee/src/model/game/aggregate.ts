@@ -1,14 +1,24 @@
 import { Db } from "mongodb";
-
 import * as GS from "@tick-tack-block/gamelogic/src/gamestate";
 
-export type Game = {
+/**
+ * GameAggregate Model
+ *
+ * Represents a game aggregate/snapshot made from a list
+ * of parset block events and extrinsics.
+ *
+ */
+
+export type GameAggregate = {
   marketId: string;
   slug: string;
   state: GS.GameState;
 };
 
-export const get = async (db: Db, slug: string): Promise<Game | null> => {
+export const get = async (
+  db: Db,
+  slug: string
+): Promise<GameAggregate | null> => {
   return await db.collection("games").findOne<any>({ slug });
 };
 
@@ -19,7 +29,7 @@ export const put = async (
   game: GS.GameState,
   upsert: boolean
 ) => {
-  return db.collection<Game>("games").findOneAndReplace(
+  return db.collection<GameAggregate>("games").findOneAndReplace(
     { slug },
     {
       marketId,
@@ -31,5 +41,5 @@ export const put = async (
 };
 
 export const list = async (db: Db) => {
-  return db.collection<Game>("games").find().toArray();
+  return db.collection<GameAggregate>("games").find().toArray();
 };

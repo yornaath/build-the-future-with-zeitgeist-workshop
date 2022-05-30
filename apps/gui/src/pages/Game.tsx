@@ -1,15 +1,15 @@
-import type { Game } from '@tick-tack-block/referee/src/model/game'
-import * as GB from '@tick-tack-block/gamelogic/src/gameboard'
-import { Box, Flex } from '@chakra-ui/react'
-import { useStore } from '@nanostores/react'
-import * as wallet from '../state/wallet'
-
+import ms from 'ms'
 import { useQuery } from 'react-query'
 import { useParams } from 'react-router-dom'
-import { GameBoard } from '../components/GameBoard'
+import type { GameAggregate } from '@tick-tack-block/referee/src/model/game'
 import { web3FromAddress } from '@polkadot/extension-dapp'
-import ms from 'ms'
+import { Box, Flex } from '@chakra-ui/react'
+import { useStore } from '@nanostores/react'
+import * as GB from '@tick-tack-block/gamelogic/src/gameboard'
 import { Market, Swap } from '@zeitgeistpm/sdk/dist/models'
+import * as wallet from '../state/wallet'
+import { GameBoard } from '../components/GameBoard'
+import { Betting } from '../components/Betting'
 
 export const GamePage = () => {
   let params = useParams()
@@ -17,7 +17,7 @@ export const GamePage = () => {
   const sdk = useStore(wallet.$sdk)
   const selectedAccount = useStore(wallet.$selectedAccount)
 
-  const game = useQuery<Game>(
+  const game = useQuery<GameAggregate>(
     ['game', params.slug],
     async () => {
       return fetch(`http://localhost:3000/games/${params.slug}`).then(res => res.json())
@@ -68,16 +68,19 @@ export const GamePage = () => {
   }
 
   return (
-    <Flex justifyContent={'center'}>
-      {game.data ? (
+    <Box>
+      {game.data && (
         <>
-          <Box mb={4}>
+          <Flex justifyContent={'center'} mb={12}>
             <GameBoard size={28} onClick={onClickSlot} game={game.data.state} />
-          </Box>
+          </Flex>
         </>
-      ) : (
-        ''
       )}
-    </Flex>
+      {market.data && pool.data && (
+        <Flex justifyContent={'center'}>
+          <Betting market={market.data} pool={pool.data} />
+        </Flex>
+      )}
+    </Box>
   )
 }

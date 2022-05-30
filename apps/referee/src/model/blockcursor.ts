@@ -2,6 +2,15 @@ import { Db, ClientSession } from "mongodb";
 import SDK from "@zeitgeistpm/sdk";
 import { blockNumberOf, latestBlock } from "@tick-tack-block/lib";
 
+/**
+ *
+ * Get the last processes block.
+ *
+ * @param db mongodb.DB
+ * @param sdk @zeitgeist.pm/SDK
+ * @returns number
+ */
+
 export const get = async (db: Db, sdk: SDK) => {
   const lastProcessedBlock = await db
     .collection("blockcursor")
@@ -20,6 +29,14 @@ export const get = async (db: Db, sdk: SDK) => {
   return cursor;
 };
 
+/**
+ *
+ * Set the processes block cursor.
+ *
+ * @param db mongodb.DB
+ * @param blockNumber number
+ * @param session mongodb.ClientSession - for transactions. Unimplemented
+ */
 export const update = async (
   db: Db,
   blockNumber: number,

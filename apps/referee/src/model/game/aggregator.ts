@@ -4,17 +4,18 @@ import {
   DecodedMarketMetadata,
   CategoryMetadata,
 } from "@zeitgeistpm/sdk/dist/types";
-import { blockNumberOf, readMultiHash } from "@tick-tack-block/lib";
+import { blockNumberOf, readMultiHash, tail } from "@tick-tack-block/lib";
 import * as GameState from "@tick-tack-block/gamelogic/src/gamestate";
-import * as Blockcursor from "./model/blockcursor";
-import * as GameAggregate from "./model/game/aggregate";
-import * as GameEvents from "./model/game/events";
+import * as Cursor from "../cursor";
+import * as GameAggregate from "./game";
+import * as GameEvents from "./events";
 
-export const process = async (db: Db, sdk: SDK) => {
-  const cursor = await Blockcursor.get(db, sdk);
+export const run = async (db: Db, sdk: SDK) => {
+  const cursor = await Cursor.get(db, sdk, "games");
 
-  await GameEvents.tail(sdk, cursor, async (events, block) => {
+  return tail(sdk.api, cursor, async (block) => {
     const blockNumber = blockNumberOf(block);
+    const events = await GameEvents.parseBlockEvents(sdk, block);
 
     for (const event of events) {
       switch (event.type) {
@@ -57,6 +58,6 @@ export const process = async (db: Db, sdk: SDK) => {
       }
     }
 
-    await Blockcursor.update(db, blockNumber);
+    await Cursor.update(db, "games", blockNumber);
   });
 };

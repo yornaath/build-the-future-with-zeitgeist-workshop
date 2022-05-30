@@ -11,10 +11,8 @@ import { blockNumberOf, latestBlock } from "@tick-tack-block/lib";
  * @returns number
  */
 
-export const get = async (db: Db, sdk: SDK) => {
-  const lastProcessedBlock = await db
-    .collection("blockcursor")
-    .findOne({ key: "blockcursor" });
+export const get = async (db: Db, sdk: SDK, key: string) => {
+  const lastProcessedBlock = await db.collection("cursors").findOne({ key });
 
   let cursor: number;
 
@@ -39,13 +37,14 @@ export const get = async (db: Db, sdk: SDK) => {
  */
 export const update = async (
   db: Db,
+  key: string,
   blockNumber: number,
   session?: ClientSession
 ) => {
   await db
-    .collection("blockcursor")
+    .collection("cursors")
     .findOneAndUpdate(
-      { key: "blockcursor" },
+      { key },
       { $set: { number: blockNumber } },
       { upsert: true, session }
     );

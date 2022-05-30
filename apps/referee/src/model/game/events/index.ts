@@ -3,7 +3,7 @@ import { VoidFn } from "@polkadot/api/types";
 import { EventRecord, SignedBlock } from "@polkadot/types/interfaces";
 import * as GS from "@tick-tack-block/gamelogic/src/gamestate";
 import { Vec } from "@polkadot/types";
-import { blockNumberOf, blockAt } from "@tick-tack-block/lib";
+import { blockNumberOf, blockAt, tail } from "@tick-tack-block/lib";
 
 /**
  * Represents a chain game event.
@@ -11,37 +11,6 @@ import { blockNumberOf, blockAt } from "@tick-tack-block/lib";
 export type GameEvent =
   | { type: "newgame"; market: any }
   | { type: "turn"; slug: string; turn: GS.Turn };
-
-/**
- *
- * Tails the chain for new blocks from a given blocknumber
- *
- * @param api ApiPromise
- * @param nr number - block number to tail from
- * @param cb function - callback to invoke on new block
- * @returns function? - unsubscribe
- */
-export const tail = async (
-  sdk: SDK,
-  nr: number,
-  cb: (events: GameEvent[], block: SignedBlock) => Promise<void>
-): Promise<VoidFn | undefined> => {
-  const api = sdk.api;
-  const [block, last] = await blockAt(api, nr);
-
-  if (last) {
-    return await api.rpc.chain.subscribeFinalizedHeads((header) => {
-      return api.rpc.chain.getBlock(header.hash).then(async (block) => {
-        const events = await parseBlockEvents(sdk, block);
-        return await cb(events, block);
-      });
-    });
-  } else if (block) {
-    const events = await parseBlockEvents(sdk, block);
-    await cb(events, block);
-    return tail(sdk, nr + 1, cb);
-  }
-};
 
 /**
  *

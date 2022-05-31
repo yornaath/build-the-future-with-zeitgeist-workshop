@@ -17,7 +17,7 @@ export const GamePage = () => {
   const sdk = useStore(wallet.$sdk)
   const selectedAccount = useStore(wallet.$selectedAccount)
 
-  const game = useQuery<GameAggregate>(
+  const { data: game } = useQuery<GameAggregate>(
     ['game', params.slug],
     async () => {
       return fetch(`http://localhost:3000/games/${params.slug}`).then(res => res.json())
@@ -28,23 +28,23 @@ export const GamePage = () => {
     },
   )
 
-  const market = useQuery<Market>(
-    ['market', game.data?.marketId],
+  const { data: market } = useQuery<Market>(
+    ['market', game?.marketId],
     async () => {
-      return sdk.models.fetchMarketData(Number(game.data?.marketId))
+      return sdk.models.fetchMarketData(Number(game?.marketId))
     },
     {
-      enabled: Boolean(game.data?.marketId),
+      enabled: Boolean(game?.marketId),
     },
   )
 
-  const pool = useQuery<Swap | null>(
-    ['pool', market.data?.marketId],
+  const { data: pool } = useQuery<Swap | null>(
+    ['pool', market?.marketId],
     async () => {
-      return market.data?.getPool() || null
+      return market?.getPool() || null
     },
     {
-      enabled: Boolean(market.data),
+      enabled: Boolean(market),
     },
   )
 
@@ -71,16 +71,16 @@ export const GamePage = () => {
 
   return (
     <Box>
-      {game.data && (
+      {game && (
         <>
           <Flex justifyContent={'center'} mb={12}>
-            <GameBoard size={28} onClick={onClickSlot} game={game.data.state} />
+            <GameBoard size={28} onClick={onClickSlot} game={game.state} />
           </Flex>
         </>
       )}
-      {market.data && pool.data && (
+      {market && pool && (
         <Flex justifyContent={'center'}>
-          <Betting market={market.data} pool={pool.data} />
+          <Betting market={market} pool={pool} />
         </Flex>
       )}
     </Box>

@@ -235,9 +235,12 @@ const AssetSlot = (props: AssetBuyButtonProps) => {
     <Flex mr={4} justifyContent="center" alignItems="center">
       <Box bg={props.category.color} h={8} w={8} rounded="md" mr={4}></Box>
       <Box>
-        <Text fontWeight="bold" p={2}>
-          {props.category.ticker}
-        </Text>
+        <Box pl={2}>
+          <Text fontWeight="bold">{props.category.ticker}</Text>
+          <Text fontSize="xs" mb={3}>
+            {(spotPrice / ZTG).toFixed(3)} <b>ZBS</b>
+          </Text>
+        </Box>
         <Tooltip label={props.category.name} hasArrow>
           <>
             <Button
@@ -245,7 +248,7 @@ const AssetSlot = (props: AssetBuyButtonProps) => {
               size="xs"
               variant={'outline'}
               onClick={buyModal.onOpen}>
-              {isTransacting ? <Spinner /> : `Buy asset @${spotPrice / ZTG} ZBS`}
+              {isTransacting ? <Spinner /> : `Buy asset`}
             </Button>
 
             <Modal isOpen={buyModal.isOpen} onClose={buyModal.onClose}>

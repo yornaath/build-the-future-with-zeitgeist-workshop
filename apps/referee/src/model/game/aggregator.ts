@@ -11,7 +11,7 @@ import * as GameAggregate from "./game";
 import * as GameEvents from "./events";
 
 export const run = async (db: Db, sdk: SDK) => {
-  const cursor = await Cursor.get(db, sdk, "games");
+  const cursor = 1367271; // await Cursor.get(db, sdk, "games");
 
   return tail(sdk.api, cursor, async (block) => {
     const blockNumber = blockNumberOf(block);

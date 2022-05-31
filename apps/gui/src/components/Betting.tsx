@@ -42,9 +42,21 @@ export type BettingProps = {
 }
 
 export const Betting = (props: BettingProps) => {
+  const ended =
+    'timestamp' in props.market.period
+      ? Date.now() > props.market.period.timestamp[1]
+      : false
   const toast = useToast()
+
   return (
     <Box bg={'blackAlpha.100'} py={2} px={6} rounded="md">
+      {ended && (
+        <Box mb={4}>
+          <Text textAlign="center" fontWeight="bold">
+            Market has ended.
+          </Text>
+        </Box>
+      )}
       <Flex>
         {props.market.categories?.map((category, index) => (
           <Flex mr={4} justifyContent="center" alignItems="center">
@@ -55,6 +67,7 @@ export const Betting = (props: BettingProps) => {
               </Text>
               <Tooltip label={category.name} hasArrow>
                 <AssetBuyButton
+                  disabled={ended}
                   market={props.market}
                   pool={props.pool}
                   assetId={index}
@@ -76,6 +89,7 @@ type AssetBuyButtonProps = {
   pool: Swap
   assetId: number
   toast: ReturnType<typeof useToast>
+  disabled: boolean
 }
 
 const AssetBuyButton = (props: AssetBuyButtonProps) => {
@@ -213,7 +227,7 @@ const AssetBuyButton = (props: AssetBuyButtonProps) => {
   return (
     <>
       <Button
-        disabled={isTransacting}
+        disabled={isTransacting || props.disabled}
         size="xs"
         variant={'outline'}
         onClick={buyModal.onOpen}>

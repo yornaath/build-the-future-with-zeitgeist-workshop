@@ -17,7 +17,6 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react'
-import { util } from '@zeitgeistpm/sdk'
 import Decimal from 'decimal.js'
 import { Market, Swap } from '@zeitgeistpm/sdk/dist/models'
 import { AssetId, CategoryMetadata } from '@zeitgeistpm/sdk/dist/types'

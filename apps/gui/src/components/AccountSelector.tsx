@@ -1,7 +1,7 @@
+import { useQuery } from 'react-query'
 import { useStore } from '@nanostores/react'
 import { Select, Flex, Box, Text, Image } from '@chakra-ui/react'
 import Identicon from '@polkadot/react-identicon'
-import { useQuery } from 'react-query'
 import * as wallet from '../state/wallet'
 
 const AccountSelector = () => {

@@ -1,7 +1,7 @@
 import ms from 'ms'
 import React from 'react'
-import { Box, Flex, Text } from '@chakra-ui/react'
-import { Link } from 'react-router-dom'
+import { Box, Flex, Text, Tooltip } from '@chakra-ui/react'
+import { Link, NavLink } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import type { GameAggregate } from '@tick-tack-block/referee/src/model/game'
 import { useStore } from '@nanostores/react'
@@ -21,16 +21,24 @@ export const GameList = () => {
 
   return (
     <Box p={12}>
+      {games.data?.length && (
+        <Box mb={4}>
+          <Text textAlign="right" fontWeight={'bold'} fontSize="xl">
+            Games
+          </Text>
+        </Box>
+      )}
+
       {games.data?.map(game => (
-        <Link to={`/games/${game.slug}`}>
-          <GameItem game={game} />
-        </Link>
+        <NavLink to={`/games/${game.slug}`}>
+          {({ isActive }) => <GameItem game={game} isActive={isActive} />}
+        </NavLink>
       ))}
     </Box>
   )
 }
 
-const GameItem = (props: { game: GameAggregate }) => {
+const GameItem = (props: { game: GameAggregate; isActive: boolean }) => {
   const selected = useStore(wallet.$selectedAccount)
   const { challenged, challenger } = props.game.state.players
 
@@ -38,7 +46,8 @@ const GameItem = (props: { game: GameAggregate }) => {
 
   return (
     <Box
-      backgroundColor={'blackAlpha.200'}
+      backgroundColor={props.isActive ? 'seer.200' : 'blackAlpha.200'}
+      color={props.isActive ? 'whiteAlpha.800' : 'blackAlpha.800'}
       rounded="md"
       py={3}
       px={4}
@@ -48,15 +57,20 @@ const GameItem = (props: { game: GameAggregate }) => {
       borderStyle="solid"
       cursor={'pointer'}>
       <Box>
-        <Flex>
-          <Text size={'xs'} mr={2}>
-            {shortenAddress(challenger)}
-          </Text>
-          <b>{' VS '}</b>
-          <Text size={'xs'} ml={2}>
-            {shortenAddress(challenged)}
-          </Text>
-        </Flex>
+        <Tooltip
+          hasArrow
+          bg="seer.500"
+          label={isParticipating ? 'You have been challenged!' : undefined}>
+          <Flex>
+            <Text size={'xs'} mr={2}>
+              {shortenAddress(challenger)}
+            </Text>
+            <b>{' VS '}</b>
+            <Text size={'xs'} ml={2}>
+              {shortenAddress(challenged)}
+            </Text>
+          </Flex>
+        </Tooltip>
       </Box>
     </Box>
   )

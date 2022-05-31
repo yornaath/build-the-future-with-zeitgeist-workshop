@@ -49,24 +49,20 @@ export const GamePage = () => {
   )
 
   const onClickSlot = async (coord: GB.Coordinate) => {
-    try {
-      const injected = await web3FromAddress(selectedAccount)
-      const extSigner = { address: selectedAccount, signer: injected.signer }
+    const injected = await web3FromAddress(selectedAccount)
+    const extSigner = { address: selectedAccount, signer: injected.signer }
 
-      const tx = sdk.api.tx.system.remarkWithEvent(
-        JSON.stringify({
-          type: 'turn',
-          slug: params.slug,
-          turn: {
-            coord,
-          },
-        }),
-      )
+    const tx = sdk.api.tx.system.remarkWithEvent(
+      JSON.stringify({
+        type: 'turn',
+        slug: params.slug,
+        turn: {
+          coord,
+        },
+      }),
+    )
 
-      await tx.signAndSend(selectedAccount, extSigner)
-    } catch (error) {
-      console.log(error)
-    }
+    await tx.signAndSend(selectedAccount, extSigner)
   }
 
   return (

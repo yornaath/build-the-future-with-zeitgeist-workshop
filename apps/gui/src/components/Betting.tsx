@@ -134,7 +134,7 @@ const AssetBuyButton = (props: AssetBuyButtonProps) => {
     const asset = assets[props.assetId] as AssetId
     const ammount = new Decimal(ammountNumber).mul(ZTG).toFixed(0)
     const slippage = new Decimal(0.98)
-    const maxPrice = 9999 * ZTG
+    const maxPrice = 9999 * ZTG // will be calculated on chain in the future. Min out is enough constraint.
 
     const poolAccountId = await props.pool.accountId()
 

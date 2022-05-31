@@ -46,6 +46,7 @@ export const Betting = (props: BettingProps) => {
     'timestamp' in props.market.period
       ? Date.now() > props.market.period.timestamp[1]
       : false
+
   const toast = useToast()
 
   return (
@@ -59,24 +60,14 @@ export const Betting = (props: BettingProps) => {
       )}
       <Flex>
         {props.market.categories?.map((category, index) => (
-          <Flex mr={4} justifyContent="center" alignItems="center">
-            <Box bg={category.color} h={8} w={8} rounded="md" mr={4}></Box>
-            <Box>
-              <Text fontWeight="bold" p={2}>
-                {category.ticker}
-              </Text>
-              <Tooltip label={category.name} hasArrow>
-                <AssetBuyButton
-                  disabled={ended}
-                  market={props.market}
-                  pool={props.pool}
-                  assetId={index}
-                  category={category}
-                  toast={toast}
-                />
-              </Tooltip>
-            </Box>
-          </Flex>
+          <AssetSlot
+            disabled={ended}
+            market={props.market}
+            pool={props.pool}
+            assetId={index}
+            category={category}
+            toast={toast}
+          />
         ))}
       </Flex>
     </Box>
@@ -92,7 +83,7 @@ type AssetBuyButtonProps = {
   disabled: boolean
 }
 
-const AssetBuyButton = (props: AssetBuyButtonProps) => {
+const AssetSlot = (props: AssetBuyButtonProps) => {
   const sdk = useStore(wallet.$sdk)
   const selectedAccount = useStore(wallet.$selectedAccount)
   const assets = props.market.outcomeAssets.map(a => a.toJSON())
@@ -108,6 +99,21 @@ const AssetBuyButton = (props: AssetBuyButtonProps) => {
         assets[props.assetId] as any,
       )
       return spotPrice?.toNumber() || 0
+    },
+  )
+
+  const { data: balance, refetch: refetchBalance } = useQuery<number>(
+    ['balance', props.assetId],
+    async () => {
+      const asset = assets[props.assetId] as AssetId
+      return (
+        (
+          (await sdk.api.query.tokens.accounts(
+            selectedAccount,
+            sdk.api.createType('Asset', asset),
+          )) as any
+        )?.free.toNumber() / ZTG
+      )
     },
   )
 
@@ -197,6 +203,7 @@ const AssetBuyButton = (props: AssetBuyButtonProps) => {
               isClosable: true,
             })
             setTimeout(refetchSpotPrice, 500)
+            setTimeout(refetchBalance, 500)
             buyModal.onClose()
           },
           failCallback: ({ index, error }) => {
@@ -225,63 +232,77 @@ const AssetBuyButton = (props: AssetBuyButtonProps) => {
   }
 
   return (
-    <>
-      <Button
-        disabled={isTransacting || props.disabled}
-        size="xs"
-        variant={'outline'}
-        onClick={buyModal.onOpen}>
-        {isTransacting ? <Spinner /> : `Buy asset @${spotPrice / ZTG} ZBS`}
-      </Button>
+    <Flex mr={4} justifyContent="center" alignItems="center">
+      <Box bg={props.category.color} h={8} w={8} rounded="md" mr={4}></Box>
+      <Box>
+        <Text fontWeight="bold" p={2}>
+          {props.category.ticker}
+        </Text>
+        <Tooltip label={props.category.name} hasArrow>
+          <>
+            <Button
+              disabled={isTransacting || props.disabled}
+              size="xs"
+              variant={'outline'}
+              onClick={buyModal.onOpen}>
+              {isTransacting ? <Spinner /> : `Buy asset @${spotPrice / ZTG} ZBS`}
+            </Button>
 
-      <Modal isOpen={buyModal.isOpen} onClose={buyModal.onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <form onSubmit={handleSubmit(({ ammount }) => onBuyAsset(ammount))}>
-            <ModalHeader>Modal Title</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <FormLabel display={'flex'}>
-                <b>Ammount</b> <Text color="gray.500">(ZBS)</Text>
-              </FormLabel>
-              <Input
-                {...register('ammount', {
-                  required: true,
-                  validate: {
-                    valid: v => {
-                      try {
-                        return Boolean(new Decimal(v))
-                      } catch (e) {
-                        return false
-                      }
-                    },
-                  },
-                })}
-                type="number"
-              />
-              {errors.ammount && (
-                <Text mt="1" color="red">
-                  Invalid number
-                </Text>
-              )}
-            </ModalBody>
+            <Modal isOpen={buyModal.isOpen} onClose={buyModal.onClose}>
+              <ModalOverlay />
+              <ModalContent>
+                <form onSubmit={handleSubmit(({ ammount }) => onBuyAsset(ammount))}>
+                  <ModalHeader>Modal Title</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <FormLabel display={'flex'}>
+                      <b>Ammount</b> <Text color="gray.500">(ZBS)</Text>
+                    </FormLabel>
+                    <Input
+                      {...register('ammount', {
+                        required: true,
+                        validate: {
+                          valid: v => {
+                            try {
+                              return Boolean(new Decimal(v))
+                            } catch (e) {
+                              return false
+                            }
+                          },
+                        },
+                      })}
+                      type="number"
+                    />
+                    {errors.ammount && (
+                      <Text mt="1" color="red">
+                        Invalid number
+                      </Text>
+                    )}
+                  </ModalBody>
 
-            <ModalFooter>
-              <Button
-                disabled={isTransacting}
-                type="submit"
-                bg={props.category.color}
-                color="whiteAlpha.800"
-                mr={3}>
-                {isTransacting ? <Spinner /> : `Buy`}
-              </Button>
-              <Button variant="ghost" onClick={buyModal.onClose}>
-                Close
-              </Button>
-            </ModalFooter>
-          </form>
-        </ModalContent>
-      </Modal>
-    </>
+                  <ModalFooter>
+                    <Button
+                      disabled={isTransacting}
+                      type="submit"
+                      bg={props.category.color}
+                      color="whiteAlpha.800"
+                      mr={3}>
+                      {isTransacting ? <Spinner /> : `Buy`}
+                    </Button>
+                    <Button variant="ghost" onClick={buyModal.onClose}>
+                      Close
+                    </Button>
+                  </ModalFooter>
+                </form>
+              </ModalContent>
+            </Modal>
+          </>
+        </Tooltip>
+        <Box p={2} mt={2}>
+          <b>Balance: </b>
+          {balance?.toFixed(1) || 0}
+        </Box>
+      </Box>
+    </Flex>
   )
 }

@@ -84,7 +84,7 @@ const AssetBuyButton = (props: AssetBuyButtonProps) => {
   const assets = props.market.outcomeAssets.map(a => a.toJSON())
 
   const [isTransacting, setIsTransacting] = useState(false)
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const buyModal = useDisclosure()
 
   const { data: spotPrice, refetch: refetchSpotPrice } = useQuery(
     ['spotPrice', props.pool?.poolId, props.assetId],
@@ -109,13 +109,14 @@ const AssetBuyButton = (props: AssetBuyButtonProps) => {
   })
 
   useEffect(() => {
-    if (!isOpen) {
+    if (!buyModal.isOpen) {
       setValue('ammount', 1)
     }
-  }, [isOpen])
+  }, [buyModal.isOpen])
 
   const onBuyAsset = async (ammountNumber: number) => {
     setIsTransacting(true)
+
     const asset = assets[props.assetId] as AssetId
     const ammount = new Decimal(ammountNumber).mul(ZTG).toFixed(0)
     const slippage = new Decimal(0.98)
@@ -182,7 +183,7 @@ const AssetBuyButton = (props: AssetBuyButtonProps) => {
               isClosable: true,
             })
             setTimeout(refetchSpotPrice, 500)
-            onClose()
+            buyModal.onClose()
           },
           failCallback: ({ index, error }) => {
             props.toast({
@@ -203,18 +204,23 @@ const AssetBuyButton = (props: AssetBuyButtonProps) => {
         duration: 2000,
         isClosable: true,
       })
-      onClose()
+      buyModal.onClose()
     }
+
     setIsTransacting(false)
   }
 
   return (
     <>
-      <Button disabled={isTransacting} size="xs" variant={'outline'} onClick={onOpen}>
+      <Button
+        disabled={isTransacting}
+        size="xs"
+        variant={'outline'}
+        onClick={buyModal.onOpen}>
         {isTransacting ? <Spinner /> : `Buy asset @${spotPrice / ZTG} ZBS`}
       </Button>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={buyModal.isOpen} onClose={buyModal.onClose}>
         <ModalOverlay />
         <ModalContent>
           <form onSubmit={handleSubmit(({ ammount }) => onBuyAsset(ammount))}>
@@ -255,7 +261,7 @@ const AssetBuyButton = (props: AssetBuyButtonProps) => {
                 mr={3}>
                 {isTransacting ? <Spinner /> : `Buy`}
               </Button>
-              <Button variant="ghost" onClick={onClose}>
+              <Button variant="ghost" onClick={buyModal.onClose}>
                 Close
               </Button>
             </ModalFooter>

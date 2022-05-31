@@ -1,5 +1,18 @@
 import Decimal from "decimal.js";
 
+/**
+ *
+ * Calculate the assets/token estimated to get out based on how much you are putting in.
+ *
+ * @param tokenBalanceIn number - amount of 'in' asset in the pool
+ * @param tokenWeightIn number -  weight of 'in' asset on the pool
+ * @param tokenBalanceOut number - amount of 'out' asset in the pool
+ * @param tokenWeightOut number - weight of 'out' asset on the pool
+ * @param tokenAmountIn number - amount in for the swap
+ * @param swapFee number - 0 for now
+ * @returns  number
+ */
+
 export const calcOutGivenIn = (
   tokenBalanceIn: number, // amount of 'in' asset in the pool
   tokenWeightIn: number, // weight of 'in' asset on the pool

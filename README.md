@@ -8,7 +8,7 @@ This is the code for the talk given at the Polkadot Global Series North America 
 
 This application has two main components/apps. It is built loosely on event sourcing principles for aggregating game state.
 
-### The referee.
+### The Referee.
 This is a nodejs service that runs the event source aggregator, listening to market creation events and remarks(moves) on the chain and builds the state of the games which is stores to mongodb.
 
 The referee is also the designated [oracle](https://docs.zeitgeist.pm/docs/learn/using-zeitgeist-markets#the-life-cycle-of-a-zeitgeist-prediction-market) that listens to the MarketEnded event on chain and resolves the market with the correct outcome.

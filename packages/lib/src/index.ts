@@ -5,3 +5,4 @@ export * from "./errors";
 export * from "./tx";
 export * from "./weights";
 export * from "./ztg";
+export * from "./swap";

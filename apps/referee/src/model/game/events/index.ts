@@ -1,9 +1,8 @@
 import SDK from "@zeitgeistpm/sdk";
-import { VoidFn } from "@polkadot/api/types";
 import { EventRecord, SignedBlock } from "@polkadot/types/interfaces";
 import * as GS from "@tick-tack-block/gamelogic/src/gamestate";
 import { Vec } from "@polkadot/types";
-import { blockNumberOf, blockAt, tail } from "@tick-tack-block/lib";
+import { blockNumberOf, extrinsicsAtEvent } from "@tick-tack-block/lib";
 
 /**
  * Represents a chain game event.
@@ -43,16 +42,9 @@ export const parseBlockEvents = async (
       }
 
       if (api.events.system.Remarked.is(event.event)) {
-        const extrinsics = block.block.extrinsics.filter((ex, index) =>
-          Boolean(
-            blockEvents.find(
-              (event) =>
-                event.phase.isApplyExtrinsic &&
-                event.phase.asApplyExtrinsic.eq(index) &&
-                ex.method.method.toString() === "remarkWithEvent"
-            )
-          )
-        );
+        const extrinsics = extrinsicsAtEvent(blockEvents, block, {
+          method: "remarkWithEvent",
+        });
 
         const turns = extrinsics
           .map((ex) => {

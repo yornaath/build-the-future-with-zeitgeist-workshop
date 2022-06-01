@@ -9,6 +9,7 @@ export const Countdown = (props: { to: number }) => {
     const intervall = setInterval(() => {
       setTimerText(ms(props.to - Date.now(), { long: true }))
     }, ms('1sec'))
+    return () => clearInterval(intervall)
   }, [props.to])
 
   return <Box>Ends in: {timerText}</Box>

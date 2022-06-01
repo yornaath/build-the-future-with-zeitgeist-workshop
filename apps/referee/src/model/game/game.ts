@@ -24,13 +24,12 @@ export const get = async (
 export const put = async (
   db: Db,
   game: GameAggregate,
-  upsert: boolean,
   session?: ClientSession,
 ) => {
   return db
     .collection<GameAggregate>('games')
     .findOneAndReplace({ marketId: game.marketId }, game, {
-      upsert,
+      upsert: true,
       session,
     })
 }

@@ -35,17 +35,13 @@ export const run = async (db: Db, sdk: SDK) => {
             categories: CategoryMetadata
           } = JSON.parse(await readMultiHash(event.market.metadata))
 
-          await GameAggregate.put(
-            db,
-            {
-              marketId: event.market.marketId,
-              state: GameState.create(blockNumber, {
-                challenger: metadata.categories[0].name,
-                challenged: metadata.categories[1].name,
-              }),
-            },
-            true,
-          )
+          await GameAggregate.put(db, {
+            marketId: event.market.marketId,
+            state: GameState.create(blockNumber, {
+              challenger: metadata.categories[0].name,
+              challenged: metadata.categories[1].name,
+            }),
+          })
 
           break
 
@@ -53,14 +49,10 @@ export const run = async (db: Db, sdk: SDK) => {
           const game = await GameAggregate.get(db, event.marketId)
 
           if (game) {
-            await GameAggregate.put(
-              db,
-              {
-                marketId: game.marketId,
-                state: GameState.turn(game.state, event.turn),
-              },
-              false,
-            )
+            await GameAggregate.put(db, {
+              marketId: game.marketId,
+              state: GameState.turn(game.state, event.turn),
+            })
           }
 
           break

@@ -1,5 +1,5 @@
-import { Db, ClientSession } from "mongodb";
-import * as GS from "@tick-tack-block/gamelogic/src/gamestate";
+import { Db, ClientSession } from 'mongodb'
+import * as GS from '@tick-tack-block/gamelogic/src/gamestate'
 
 /**
  * GameAggregate Model
@@ -10,17 +10,14 @@ import * as GS from "@tick-tack-block/gamelogic/src/gamestate";
  */
 
 export type GameAggregate = {
-  marketId: string;
-  slug: string;
-  state: GS.GameState;
-};
-
-export const get = async (
-  db: Db,
+  marketId: string
   slug: string
-): Promise<GameAggregate | null> => {
-  return await db.collection("games").findOne<any>({ slug });
-};
+  state: GS.GameState
+}
+
+export const get = async (db: Db, slug: string): Promise<GameAggregate | null> => {
+  return await db.collection('games').findOne<any>({ slug })
+}
 
 export const put = async (
   db: Db,
@@ -28,19 +25,19 @@ export const put = async (
   marketId: string,
   game: GS.GameState,
   upsert: boolean,
-  session?: ClientSession
+  session?: ClientSession,
 ) => {
-  return db.collection<GameAggregate>("games").findOneAndReplace(
+  return db.collection<GameAggregate>('games').findOneAndReplace(
     { slug },
     {
       marketId,
       slug,
       state: game,
     },
-    { upsert, session }
-  );
-};
+    { upsert, session },
+  )
+}
 
 export const list = async (db: Db) => {
-  return db.collection<GameAggregate>("games").find().toArray();
-};
+  return db.collection<GameAggregate>('games').find().toArray()
+}

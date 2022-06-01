@@ -1,6 +1,6 @@
-import { Db, ClientSession } from "mongodb";
-import SDK from "@zeitgeistpm/sdk";
-import { blockNumberOf, latestBlock } from "@tick-tack-block/lib";
+import { Db, ClientSession } from 'mongodb'
+import SDK from '@zeitgeistpm/sdk'
+import { blockNumberOf, latestBlock } from '@tick-tack-block/lib'
 
 /**
  *
@@ -12,20 +12,20 @@ import { blockNumberOf, latestBlock } from "@tick-tack-block/lib";
  */
 
 export const get = async (db: Db, sdk: SDK, key: string) => {
-  const lastProcessedBlock = await db.collection("cursors").findOne({ key });
+  const lastProcessedBlock = await db.collection('cursors').findOne({ key })
 
-  let cursor: number;
+  let cursor: number
 
   if (lastProcessedBlock) {
-    cursor = lastProcessedBlock.number;
+    cursor = lastProcessedBlock.number
   } else {
-    const currentBlock = await latestBlock(sdk.api);
-    const currentBlockNumber = blockNumberOf(currentBlock);
-    cursor = currentBlockNumber;
+    const currentBlock = await latestBlock(sdk.api)
+    const currentBlockNumber = blockNumberOf(currentBlock)
+    cursor = currentBlockNumber
   }
 
-  return cursor;
-};
+  return cursor
+}
 
 /**
  *
@@ -40,13 +40,13 @@ export const put = async (
   db: Db,
   key: string,
   blockNumber: number,
-  session?: ClientSession
+  session?: ClientSession,
 ) => {
   await db
-    .collection("cursors")
+    .collection('cursors')
     .findOneAndUpdate(
       { key },
       { $set: { number: blockNumber } },
-      { upsert: true, session }
-    );
-};
+      { upsert: true, session },
+    )
+}

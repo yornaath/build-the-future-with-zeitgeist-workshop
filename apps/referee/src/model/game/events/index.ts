@@ -1,15 +1,15 @@
-import SDK from "@zeitgeistpm/sdk";
-import { EventRecord, SignedBlock } from "@polkadot/types/interfaces";
-import * as GS from "@tick-tack-block/gamelogic/src/gamestate";
-import { Vec } from "@polkadot/types";
-import { blockNumberOf, extrinsicsAtEvent } from "@tick-tack-block/lib";
+import SDK from '@zeitgeistpm/sdk'
+import { EventRecord, SignedBlock } from '@polkadot/types/interfaces'
+import * as GS from '@tick-tack-block/gamelogic/src/gamestate'
+import { Vec } from '@polkadot/types'
+import { blockNumberOf, extrinsicsAtEvent } from '@tick-tack-block/lib'
 
 /**
  * Represents a chain game event.
  */
 export type GameEvent =
-  | { type: "newgame"; market: any }
-  | { type: "turn"; slug: string; turn: GS.Turn };
+  | { type: 'newgame'; market: any }
+  | { type: 'turn'; slug: string; turn: GS.Turn }
 
 /**
  *
@@ -21,55 +21,54 @@ export type GameEvent =
  */
 export const parseBlockEvents = async (
   sdk: SDK,
-  block: SignedBlock
+  block: SignedBlock,
 ): Promise<GameEvent[]> => {
-  const api = sdk.api;
-  const blockNumber = blockNumberOf(block);
+  const api = sdk.api
+  const blockNumber = blockNumberOf(block)
 
   const blockEvents = await (
     await api.at(block.block.header.hash.toHex())
-  ).query.system.events<Vec<EventRecord>>();
+  ).query.system.events<Vec<EventRecord>>()
 
   const events = blockEvents
-    .map<GameEvent | GameEvent[] | null>((event) => {
+    .map<GameEvent | GameEvent[] | null>(event => {
       if (api.events.predictionMarkets.MarketCreated.is(event.event)) {
-        const [marketId, marketAccountId, market] =
-          event.event.data.toHuman() as any;
+        const [marketId, marketAccountId, market] = event.event.data.toHuman() as any
         return {
-          type: "newgame",
+          type: 'newgame',
           market: { marketId, marketAccountId, ...market },
-        };
+        }
       }
 
       if (api.events.system.Remarked.is(event.event)) {
         const extrinsics = extrinsicsAtEvent(blockEvents, block, {
-          method: "remarkWithEvent",
-        });
+          method: 'remarkWithEvent',
+        })
 
         const turns = extrinsics
-          .map((ex) => {
-            const signer = ex.signer.toString();
-            const remark = ex.method.args.at(0);
-            const rawturn = JSON.parse((remark?.toHuman() as string) || "null");
-            if (!rawturn) return null;
+          .map(ex => {
+            const signer = ex.signer.toString()
+            const remark = ex.method.args.at(0)
+            const rawturn = JSON.parse((remark?.toHuman() as string) || 'null')
+            if (!rawturn) return null
             return {
-              type: "turn",
+              type: 'turn',
               slug: rawturn.slug,
               turn: {
                 ...rawturn.turn,
                 blockNumber,
                 player: signer,
               },
-            } as GameEvent;
+            } as GameEvent
           })
-          .filter((turn): turn is GameEvent => Boolean(turn));
+          .filter((turn): turn is GameEvent => Boolean(turn))
 
-        return turns;
+        return turns
       }
 
-      return null;
+      return null
     })
-    .filter((event): event is GameEvent => Boolean(event));
+    .filter((event): event is GameEvent => Boolean(event))
 
-  return events.flat();
-};
+  return events.flat()
+}

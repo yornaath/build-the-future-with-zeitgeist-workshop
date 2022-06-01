@@ -1,7 +1,7 @@
-import { ApiPromise } from "@polkadot/api";
-import { VoidFn } from "@polkadot/api/types";
-import { Vec } from "@polkadot/types";
-import { EventRecord, SignedBlock } from "@polkadot/types/interfaces";
+import { ApiPromise } from '@polkadot/api'
+import { VoidFn } from '@polkadot/api/types'
+import { Vec } from '@polkadot/types'
+import { EventRecord, SignedBlock } from '@polkadot/types/interfaces'
 
 /**
  *
@@ -11,8 +11,8 @@ import { EventRecord, SignedBlock } from "@polkadot/types/interfaces";
  * @returns number
  */
 export const blockNumberOf = (block: SignedBlock) => {
-  return parseInt(block.block.header.number.toString().replace(/,/g, ""));
-};
+  return parseInt(block.block.header.number.toString().replace(/,/g, ''))
+}
 
 /**
  *
@@ -21,7 +21,7 @@ export const blockNumberOf = (block: SignedBlock) => {
  * @param api ApiPromise
  * @returns SignedBlock
  */
-export const latestBlock = async (api: ApiPromise) => api.rpc.chain.getBlock();
+export const latestBlock = async (api: ApiPromise) => api.rpc.chain.getBlock()
 
 /**
  *
@@ -35,21 +35,21 @@ export const latestBlock = async (api: ApiPromise) => api.rpc.chain.getBlock();
 export const tail = async (
   api: ApiPromise,
   nr: number,
-  cb: (block: SignedBlock) => Promise<void>
+  cb: (block: SignedBlock) => Promise<void>,
 ): Promise<VoidFn | undefined> => {
-  const [block, last] = await blockAt(api, nr);
+  const [block, last] = await blockAt(api, nr)
 
   if (last) {
-    return await api.rpc.chain.subscribeFinalizedHeads((header) => {
-      return api.rpc.chain.getBlock(header.hash).then(async (block) => {
-        return await cb(block);
-      });
-    });
+    return await api.rpc.chain.subscribeFinalizedHeads(header => {
+      return api.rpc.chain.getBlock(header.hash).then(async block => {
+        return await cb(block)
+      })
+    })
   } else if (block) {
-    await cb(block);
-    return tail(api, nr + 1, cb);
+    await cb(block)
+    return tail(api, nr + 1, cb)
   }
-};
+}
 
 /**
  *
@@ -61,17 +61,17 @@ export const tail = async (
  */
 export const blockAt = async (
   api: ApiPromise,
-  nr: number
+  nr: number,
 ): Promise<[SignedBlock | null, boolean]> => {
   try {
     const block = await api.rpc.chain
       .getBlockHash(nr)
-      .then((hash) => api.rpc.chain.getBlock(hash));
-    return [block, false];
+      .then(hash => api.rpc.chain.getBlock(hash))
+    return [block, false]
   } catch (error) {
-    return [null, true];
+    return [null, true]
   }
-};
+}
 
 /**
  *
@@ -86,17 +86,17 @@ export const extrinsicsAtEvent = (
   events: Vec<EventRecord>,
   block: SignedBlock,
   filter?: {
-    method?: string;
-  }
+    method?: string
+  },
 ) => {
   return block.block.extrinsics.filter((ex, index) =>
     Boolean(
       events.find(
-        (event) =>
+        event =>
           event.phase.isApplyExtrinsic &&
           event.phase.asApplyExtrinsic.eq(index) &&
-          (!filter?.method || ex.method.method.toString() === filter.method)
-      )
-    )
-  );
-};
+          (!filter?.method || ex.method.method.toString() === filter.method),
+      ),
+    ),
+  )
+}

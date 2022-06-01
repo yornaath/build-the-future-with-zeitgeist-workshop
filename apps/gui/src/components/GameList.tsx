@@ -21,16 +21,18 @@ export const GameList = () => {
 
   return (
     <Box p={12}>
-      {games.data?.length && (
+      {games.data?.length ? (
         <Box mb={4}>
           <Text textAlign="right" fontWeight={'bold'} fontSize="xl">
             Games
           </Text>
         </Box>
+      ) : (
+        ''
       )}
 
       {games.data?.map(game => (
-        <NavLink to={`/games/${game.slug}`}>
+        <NavLink to={`/games/${game.marketId}`}>
           {({ isActive }) => <GameItem game={game} isActive={isActive} />}
         </NavLink>
       ))}

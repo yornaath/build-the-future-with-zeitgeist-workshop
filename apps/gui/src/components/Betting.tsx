@@ -34,6 +34,7 @@ import {
 import { useQuery } from 'react-query'
 import * as wallet from '../state/wallet'
 import { web3FromAddress } from '@polkadot/extension-dapp'
+import { Countdown } from './Countdown'
 
 export type BettingProps = {
   market: Market
@@ -41,22 +42,16 @@ export type BettingProps = {
 }
 
 export const Betting = (props: BettingProps) => {
-  const ended =
-    'timestamp' in props.market.period
-      ? Date.now() > props.market.period.timestamp[1]
-      : false
+  const ends = 'timestamp' in props.market.period ? props.market.period.timestamp[1] : 0
+  const ended = Date.now() > ends
 
   const toast = useToast()
 
   return (
     <Box bg={'blackAlpha.100'} py={2} px={6} rounded="md">
-      {ended && (
-        <Box mb={4}>
-          <Text textAlign="center" fontWeight="bold">
-            Market has ended.
-          </Text>
-        </Box>
-      )}
+      <Text textAlign="center" fontWeight="bold" mb={4}>
+        {ended ? <Box>Market has ended.</Box> : <Countdown to={ends} />}
+      </Text>
       <Flex>
         {props.market.categories?.map((category, index) => (
           <AssetSlot

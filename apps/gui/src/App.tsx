@@ -35,7 +35,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<IndexPage />} />
-              <Route path="/games/:slug" element={<GamePage />} />
+              <Route path="/games/:id" element={<GamePage />} />
             </Route>
           </Routes>
         </BrowserRouter>

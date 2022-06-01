@@ -11,15 +11,14 @@ import * as GS from '@tick-tack-block/gamelogic/src/gamestate'
 
 export type GameAggregate = {
   marketId: string
-  slug: string
   state: GS.GameState
 }
 
 export const get = async (
   db: Db,
-  slug: string,
+  marketId: number,
 ): Promise<GameAggregate | null> => {
-  return await db.collection('games').findOne<any>({ slug })
+  return await db.collection('games').findOne<GameAggregate>({ marketId })
 }
 
 export const put = async (
@@ -30,7 +29,7 @@ export const put = async (
 ) => {
   return db
     .collection<GameAggregate>('games')
-    .findOneAndReplace({ slug: game.slug }, game, {
+    .findOneAndReplace({ marketId: game.marketId }, game, {
       upsert,
       session,
     })

@@ -18,12 +18,12 @@ export const GamePage = () => {
   const selectedAccount = useStore(wallet.$selectedAccount)
 
   const { data: game } = useQuery<GameAggregate>(
-    ['game', params.slug],
+    ['game', params.id],
     async () => {
-      return fetch(`http://localhost:3000/games/${params.slug}`).then(res => res.json())
+      return fetch(`http://localhost:3000/games/${params.id}`).then(res => res.json())
     },
     {
-      enabled: Boolean(params.slug),
+      enabled: Boolean(params.id),
       refetchInterval: ms('3 seconds'),
     },
   )
@@ -55,7 +55,7 @@ export const GamePage = () => {
     const tx = sdk.api.tx.system.remarkWithEvent(
       JSON.stringify({
         type: 'turn',
-        slug: params.slug,
+        marketId: game?.marketId,
         turn: {
           coord,
         },

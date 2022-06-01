@@ -19,16 +19,17 @@ export const serve = async (db: Db, sdk: SDK) => {
   server.register(cors)
 
   server.get('/games', async () => {
-    const games = await game.list(db)
-    return games
+    return await game.list(db)
   })
 
-  server.get('/games/:slug', async req => {
-    const games = await game.get(db, (req.params as any).slug)
-    return games
+  server.get('/games/:marketId', async req => {
+    return await game.get(db, (req.params as any).marketId)
   })
 
-  await server.listen(parseInt(process.env.REFEREE_API_PORT as string), '0.0.0.0')
+  await server.listen(
+    parseInt(process.env.REFEREE_API_PORT as string),
+    '0.0.0.0',
+  )
 
   console.log('server up')
 }

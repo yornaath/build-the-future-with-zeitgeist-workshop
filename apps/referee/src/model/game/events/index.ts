@@ -9,8 +9,8 @@ import { blockNumberOf, extrinsicsAtEvent } from '@tick-tack-block/lib'
  */
 export type GameEvent =
   | { type: 'newgame'; market: any }
-  | { type: 'turn'; slug: string; turn: GS.Turn }
-  | { type: 'ended'; slug: string }
+  | { type: 'turn'; marketId: number; turn: GS.Turn }
+  | { type: 'ended'; marketId: number }
 
 /**
  *
@@ -55,7 +55,7 @@ export const parseBlockEvents = async (
             if (!rawturn) return null
             return {
               type: 'turn',
-              slug: rawturn.slug,
+              marketId: rawturn.marketId,
               turn: {
                 ...rawturn.turn,
                 blockNumber,
@@ -68,10 +68,12 @@ export const parseBlockEvents = async (
         return turns
       }
 
-      // if(api.events.predictionMarkets.MarketEnded.is(event.event)) {
-      //   const [marketId] = event.event.data.toHuman() as any
+      // if (api.events.predictionMarkets.MarketEnded.is(event.event)) {
+      //   const [marketId, marketAccountId, market] =
+      //     event.event.data.toHuman() as any
       //   return {
-      //     type: "ended"
+      //     type: 'ended',
+      //     marketId,
       //   }
       // }
 

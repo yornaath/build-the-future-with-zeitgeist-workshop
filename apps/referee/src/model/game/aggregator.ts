@@ -39,7 +39,6 @@ export const run = async (db: Db, sdk: SDK) => {
             db,
             {
               marketId: event.market.marketId,
-              slug: metadata.slug,
               state: GameState.create(blockNumber, {
                 challenger: metadata.categories[0].name,
                 challenged: metadata.categories[1].name,
@@ -51,14 +50,13 @@ export const run = async (db: Db, sdk: SDK) => {
           break
 
         case 'turn':
-          const game = await GameAggregate.get(db, event.slug)
+          const game = await GameAggregate.get(db, event.marketId)
 
           if (game) {
             await GameAggregate.put(
               db,
               {
                 marketId: game.marketId,
-                slug: event.slug,
                 state: GameState.turn(game.state, event.turn),
               },
               false,
@@ -66,6 +64,9 @@ export const run = async (db: Db, sdk: SDK) => {
           }
 
           break
+
+        case 'ended':
+          const market = await sdk.models.fetchMarketData(event.marketId)
       }
     }
 

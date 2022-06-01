@@ -28,6 +28,7 @@ task(async () => {
   ])
 
   const ss58Format = Number(consts.system.ss58Prefix.toString())
+
   const uniqueAccounts = uniqBy(prop('address'), accounts).map(account => ({
     ...account,
     address: encodeAddress(account.address, ss58Format),

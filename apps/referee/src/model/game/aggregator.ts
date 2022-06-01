@@ -1,11 +1,25 @@
 import { Db } from 'mongodb'
 import SDK from '@zeitgeistpm/sdk'
-import { DecodedMarketMetadata, CategoryMetadata } from '@zeitgeistpm/sdk/dist/types'
+import {
+  DecodedMarketMetadata,
+  CategoryMetadata,
+} from '@zeitgeistpm/sdk/dist/types'
 import { blockNumberOf, readMultiHash, tail } from '@tick-tack-block/lib'
 import * as GameState from '@tick-tack-block/gamelogic/src/gamestate'
 import * as Cursor from '../cursor'
 import * as GameAggregate from './game'
 import * as GameEvents from './events'
+
+/**
+ * Run the game state aggregator.
+ *
+ * Tails the chain from the last processed block, looks for the relevant events
+ * like MarketCreated(new game), Remarked(turn) and MarketEnded(report outcome)
+ *
+ * @param db mongodb.Db
+ * @param sdk @zeitgeistpm/sdk
+ * @returns Promise<VoidFn | undefined>
+ */
 
 export const run = async (db: Db, sdk: SDK) => {
   const cursor = await Cursor.get(db, sdk, 'games')
@@ -21,12 +35,18 @@ export const run = async (db: Db, sdk: SDK) => {
             categories: CategoryMetadata
           } = JSON.parse(await readMultiHash(event.market.metadata))
 
-          const newgame = GameState.create(blockNumber, {
-            challenger: metadata.categories[0].name,
-            challenged: metadata.categories[1].name,
-          })
-
-          await GameAggregate.put(db, metadata.slug, event.market.marketId, newgame, true)
+          await GameAggregate.put(
+            db,
+            {
+              marketId: event.market.marketId,
+              slug: metadata.slug,
+              state: GameState.create(blockNumber, {
+                challenger: metadata.categories[0].name,
+                challenged: metadata.categories[1].name,
+              }),
+            },
+            true,
+          )
 
           break
 
@@ -34,8 +54,15 @@ export const run = async (db: Db, sdk: SDK) => {
           const game = await GameAggregate.get(db, event.slug)
 
           if (game) {
-            const nextstate = GameState.turn(game.state, event.turn)
-            await GameAggregate.put(db, event.slug, game.marketId, nextstate, false)
+            await GameAggregate.put(
+              db,
+              {
+                marketId: game.marketId,
+                slug: event.slug,
+                state: GameState.turn(game.state, event.turn),
+              },
+              false,
+            )
           }
 
           break

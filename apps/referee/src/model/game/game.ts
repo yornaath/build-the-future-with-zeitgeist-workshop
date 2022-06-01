@@ -15,27 +15,25 @@ export type GameAggregate = {
   state: GS.GameState
 }
 
-export const get = async (db: Db, slug: string): Promise<GameAggregate | null> => {
+export const get = async (
+  db: Db,
+  slug: string,
+): Promise<GameAggregate | null> => {
   return await db.collection('games').findOne<any>({ slug })
 }
 
 export const put = async (
   db: Db,
-  slug: string,
-  marketId: string,
-  game: GS.GameState,
+  game: GameAggregate,
   upsert: boolean,
   session?: ClientSession,
 ) => {
-  return db.collection<GameAggregate>('games').findOneAndReplace(
-    { slug },
-    {
-      marketId,
-      slug,
-      state: game,
-    },
-    { upsert, session },
-  )
+  return db
+    .collection<GameAggregate>('games')
+    .findOneAndReplace({ slug: game.slug }, game, {
+      upsert,
+      session,
+    })
 }
 
 export const list = async (db: Db) => {

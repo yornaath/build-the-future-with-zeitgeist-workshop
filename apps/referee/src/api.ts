@@ -1,7 +1,9 @@
 import fastify from 'fastify'
+import { encodeAddress } from '@polkadot/util-crypto'
 import cors from '@fastify/cors'
 import { Db } from 'mongodb'
 import SDK from '@zeitgeistpm/sdk'
+import oracle from './oracle'
 import * as game from './model/game/game'
 
 /**
@@ -17,6 +19,16 @@ export const serve = async (db: Db, sdk: SDK) => {
   const server = fastify()
 
   server.register(cors)
+
+  server.get('/referee', async () => {
+    const ss58Format = (
+      await sdk.api.rpc.system.properties()
+    ).ss58Format.unwrapOr(0)
+
+    return {
+      address: encodeAddress(oracle.address, Number(ss58Format)),
+    }
+  })
 
   server.get('/games', async () => {
     return await game.list(db)

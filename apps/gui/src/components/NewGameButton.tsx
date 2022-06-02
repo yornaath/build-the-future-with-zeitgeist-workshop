@@ -33,6 +33,7 @@ import { useStore } from '@nanostores/react'
 import { IoLogoGameControllerA } from 'react-icons/io'
 import * as wallet from '../state/wallet'
 import { useState } from 'react'
+import { useQuery } from 'react-query'
 
 export type GameForm = {
   opponent: string
@@ -55,6 +56,12 @@ export const NewGameButton = () => {
       opponent: '',
     },
   })
+
+  const { data: referee } = useQuery(['referee'], () => {
+    return fetch('http://localhost:3000/referee').then(res => res.json())
+  })
+
+  console.log(referee)
 
   const onNewGameSubmitted = async (game: GameForm) => {
     setIsTransacting(true)
@@ -83,7 +90,7 @@ export const NewGameButton = () => {
 
       const ammount = (100 * ZTG).toString()
 
-      const oracle = 'dE12VaHKNrQWGT2PzPdSQupbn5DyKi89KKrfm6Tq5SJzE8Mpc'
+      const oracle = referee.address
       const period = { timestamp: [Date.now(), Date.now() + ms('10 minutes')] }
       const mdm: MarketDisputeMechanism = { Authorized: 0 }
       const baseAssetAmount = ammount
@@ -186,6 +193,12 @@ export const NewGameButton = () => {
                       Invalid address
                     </Text>
                   )}
+                </Box>
+                <Box mb="4">
+                  <FormLabel display={'flex'}>
+                    <b>Referee/Oracle</b> <Text color="gray.500">(address)</Text>
+                  </FormLabel>
+                  <Input mb={2} disabled value={referee?.address} />
                 </Box>
               </Box>
             </ModalBody>

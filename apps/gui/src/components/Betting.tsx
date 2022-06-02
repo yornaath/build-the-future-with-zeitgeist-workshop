@@ -181,6 +181,7 @@ const AssetSlot = (props: AssetBuyButtonProps) => {
         extrinsicCallback({
           broadcastCallback: () => {
             props.toast({
+              id: 'buy-asset-broadcast',
               title: 'Broadcasting',
               description: `Buy asset transaction is being broadcast`,
               status: 'loading',
@@ -190,6 +191,7 @@ const AssetSlot = (props: AssetBuyButtonProps) => {
           },
           successCallback: data => {
             props.toast({
+              id: 'buy-asset-success',
               title: 'Success',
               description: `Betted ${ammountNumber} ZBS`,
               status: 'success',
@@ -202,6 +204,7 @@ const AssetSlot = (props: AssetBuyButtonProps) => {
           },
           failCallback: ({ index, error }) => {
             props.toast({
+              id: 'buy-asset-error',
               title: 'Error.',
               description: getTransactionError(sdk, index, error),
               status: 'error',

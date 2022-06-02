@@ -13,6 +13,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Spinner,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react'
@@ -31,6 +32,7 @@ import { useForm } from 'react-hook-form'
 import { useStore } from '@nanostores/react'
 import { IoLogoGameControllerA } from 'react-icons/io'
 import * as wallet from '../state/wallet'
+import { useState } from 'react'
 
 export type GameForm = {
   opponent: string
@@ -41,6 +43,7 @@ export const NewGameButton = () => {
   const selectedAccount = useStore(wallet.$selectedAccount)
 
   const toast = useToast()
+  const [isTransacting, setIsTransacting] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const {
@@ -54,73 +57,98 @@ export const NewGameButton = () => {
   })
 
   const onNewGameSubmitted = async (game: GameForm) => {
-    const metadata: DecodedMarketMetadata & {
-      categories: CategoryMetadata[]
-    } = {
-      question: 'Who will winn?',
-      description: 'FIGHT!',
-      slug: `tick-tack-block-${shortenAddress(selectedAccount)}-${shortenAddress(
-        game.opponent,
-      )}`,
-      categories: [
-        {
-          name: selectedAccount,
-          ticker: lastFour(selectedAccount),
-          color: '#1a1a1a',
-        },
-        {
-          name: game.opponent,
-          ticker: lastFour(game.opponent),
-          color: '#ac2dba',
-        },
-      ],
+    setIsTransacting(true)
+    try {
+      const metadata: DecodedMarketMetadata & {
+        categories: CategoryMetadata[]
+      } = {
+        question: 'Who will winn?',
+        description: 'FIGHT!',
+        slug: `tick-tack-block-${shortenAddress(selectedAccount)}-${shortenAddress(
+          game.opponent,
+        )}`,
+        categories: [
+          {
+            name: selectedAccount,
+            ticker: lastFour(selectedAccount),
+            color: '#1a1a1a',
+          },
+          {
+            name: game.opponent,
+            ticker: lastFour(game.opponent),
+            color: '#ac2dba',
+          },
+        ],
+      }
+
+      const ammount = (100 * ZTG).toString()
+
+      const oracle = 'dE12VaHKNrQWGT2PzPdSQupbn5DyKi89KKrfm6Tq5SJzE8Mpc'
+      const period = { timestamp: [Date.now(), Date.now() + ms('10 minutes')] }
+      const mdm: MarketDisputeMechanism = { Authorized: 0 }
+      const baseAssetAmount = ammount
+      const amts = [ammount, ammount]
+      const marketType = { Categorical: 2 }
+      const wts = weigh(metadata)
+      const injected = await web3FromAddress(selectedAccount)
+      const extSigner = { address: selectedAccount, signer: injected.signer }
+
+      await sdk.models.createCpmmMarketAndDeployAssets(
+        extSigner,
+        oracle,
+        period,
+        marketType,
+        mdm,
+        amts,
+        baseAssetAmount,
+        wts,
+        metadata,
+        extrinsicCallback({
+          successMethod: 'PoolCreate',
+          broadcastCallback: () => {
+            toast({
+              id: 'new-game-broadcast',
+              title: 'Broadcasting',
+              description: `Creating market and deploying pool.`,
+              status: 'loading',
+              duration: 5000,
+              isClosable: true,
+            })
+          },
+          successCallback: data => {
+            toast({
+              id: 'new-game-success',
+              title: 'Success',
+              description: 'Game created!',
+              status: 'success',
+              duration: 5000,
+              isClosable: true,
+            })
+            onClose()
+          },
+          failCallback: ({ index, error }) => {
+            toast({
+              id: 'new-game-error',
+              title: 'Error.',
+              description: getTransactionError(sdk, index, error),
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+            })
+          },
+        }),
+      )
+    } catch (error) {
+      toast({
+        title: 'Canceled.',
+        description: 'Transaction cancelled.',
+        status: 'warning',
+        duration: 4000,
+        isClosable: true,
+      })
+      setTimeout(onClose, 66)
     }
-
-    const ammount = (100 * ZTG).toString()
-
-    const oracle = 'dE12VaHKNrQWGT2PzPdSQupbn5DyKi89KKrfm6Tq5SJzE8Mpc'
-    const period = { timestamp: [Date.now(), Date.now() + ms('10 minutes')] }
-    const mdm: MarketDisputeMechanism = { Authorized: 0 }
-    const baseAssetAmount = ammount
-    const amts = [ammount, ammount]
-    const marketType = { Categorical: 2 }
-    const wts = weigh(metadata)
-    const injected = await web3FromAddress(selectedAccount)
-    const extSigner = { address: selectedAccount, signer: injected.signer }
-
-    await sdk.models.createCpmmMarketAndDeployAssets(
-      extSigner,
-      oracle,
-      period,
-      marketType,
-      mdm,
-      amts,
-      baseAssetAmount,
-      wts,
-      metadata,
-      extrinsicCallback({
-        successMethod: 'PoolCreate',
-        successCallback: data => {
-          toast({
-            title: 'Success',
-            description: 'Game created!',
-            status: 'success',
-            duration: 5000,
-            isClosable: true,
-          })
-          onClose()
-        },
-        failCallback: ({ index, error }) => {
-          toast({
-            title: 'Error.',
-            description: getTransactionError(sdk, index, error),
-            status: 'error',
-            duration: 9000,
-            isClosable: true,
-          })
-        },
-      }),
-    )
+    setIsTransacting(true)
   }
 
   return (
@@ -163,8 +191,12 @@ export const NewGameButton = () => {
             </ModalBody>
 
             <ModalFooter>
-              <Button type="submit" colorScheme={'seer'} mr={3}>
-                Create!
+              <Button
+                disabled={isTransacting}
+                type="submit"
+                colorScheme={'seer'}
+                mr={3}>
+                {isTransacting ? <Spinner /> : 'Create!'}
               </Button>
               <Button variant="ghost" onClick={onClose}>
                 Cancel

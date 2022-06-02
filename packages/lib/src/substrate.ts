@@ -1,7 +1,9 @@
 import { ApiPromise } from '@polkadot/api'
 import { VoidFn } from '@polkadot/api/types'
 import { Vec } from '@polkadot/types'
+import limit from 'p-limit'
 import { EventRecord, SignedBlock } from '@polkadot/types/interfaces'
+import { range } from './array'
 
 /**
  *
@@ -49,6 +51,38 @@ export const tail = async (
     await cb(block)
     return tail(api, nr + 1, cb)
   }
+}
+
+/**
+ *
+ * Get a slice of blocks
+ *
+ * @param api ApiPromise
+ * @param from number - start block
+ * @param to number - end block
+ * @returns Awaitable<SignedBlock[]>
+ */
+export const slice = async (
+  api: ApiPromise,
+  from: number,
+  to: number,
+  progressListener?: (percentage: number) => void,
+): Promise<SignedBlock[]> => {
+  const concurrency = limit(20)
+  const total = to - from
+  let processed = 0
+  return (
+    await Promise.all(
+      range(from, to).map(blockNumber =>
+        concurrency(async () => {
+          const block = blockAt(api, blockNumber)
+          processed++
+          progressListener?.((100 / total) * processed)
+          return block
+        }),
+      ),
+    )
+  ).filter((block): block is SignedBlock => Boolean(block))
 }
 
 /**

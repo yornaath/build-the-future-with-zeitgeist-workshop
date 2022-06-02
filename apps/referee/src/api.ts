@@ -3,8 +3,8 @@ import { encodeAddress } from '@polkadot/util-crypto'
 import cors from '@fastify/cors'
 import { Db } from 'mongodb'
 import SDK from '@zeitgeistpm/sdk'
-import oracle from './oracle'
-import * as game from './model/game/game'
+import oracle from './model/oracle'
+import * as GameAggregate from './model/game/game'
 
 /**
  *
@@ -20,6 +20,8 @@ import * as game from './model/game/game'
 export const serve = async (db: Db, sdk: SDK) => {
   const server = fastify()
 
+  const aggregates = GameAggregate.db(db)
+
   server.register(cors)
 
   server.get('/referee', async () => {
@@ -33,11 +35,11 @@ export const serve = async (db: Db, sdk: SDK) => {
   })
 
   server.get('/games', async () => {
-    return await game.list(db)
+    return await aggregates.list()
   })
 
   server.get('/games/:marketId', async req => {
-    return await game.get(db, (req.params as any).marketId)
+    return await aggregates.get((req.params as any).marketId)
   })
 
   await server.listen(

@@ -5,6 +5,7 @@
   "types": "src/index.ts",
   "dependencies": {
     "@polkadot/api": "^8.5.1",
-    "@polkadot/types": "^8.5.1"
+    "@polkadot/types": "^8.5.1",
+    "p-limit": "^4.0.0"
   }
 }

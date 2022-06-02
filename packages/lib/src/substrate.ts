@@ -37,15 +37,15 @@ export const tail = async (
   nr: number,
   cb: (block: SignedBlock) => Promise<void>,
 ): Promise<VoidFn | undefined> => {
-  const [block, last] = await blockAt(api, nr)
+  const block = await blockAt(api, nr)
 
-  if (last) {
+  if (!block) {
     return await api.rpc.chain.subscribeFinalizedHeads(header => {
       return api.rpc.chain.getBlock(header.hash).then(async block => {
         return await cb(block)
       })
     })
-  } else if (block) {
+  } else {
     await cb(block)
     return tail(api, nr + 1, cb)
   }
@@ -62,14 +62,14 @@ export const tail = async (
 export const blockAt = async (
   api: ApiPromise,
   nr: number,
-): Promise<[SignedBlock | null, boolean]> => {
+): Promise<SignedBlock | null> => {
   try {
     const block = await api.rpc.chain
       .getBlockHash(nr)
       .then(hash => api.rpc.chain.getBlock(hash))
-    return [block, false]
+    return block
   } catch (error) {
-    return [null, true]
+    return null
   }
 }
 

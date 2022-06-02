@@ -180,14 +180,16 @@ const AssetSlot = (props: AssetBuyButtonProps) => {
         extSigner,
         extrinsicCallback({
           broadcastCallback: () => {
-            props.toast({
-              id: 'buy-asset-broadcast',
-              title: 'Broadcasting',
-              description: `Buy asset transaction is being broadcast`,
-              status: 'loading',
-              duration: 3500,
-              isClosable: true,
-            })
+            if (!props.toast.isActive('buy-asset-broadcast')) {
+              props.toast({
+                id: 'buy-asset-broadcast',
+                title: 'Broadcasting',
+                description: `Buy asset transaction is being broadcast`,
+                status: 'loading',
+                duration: 3500,
+                isClosable: true,
+              })
+            }
           },
           successCallback: data => {
             props.toast({

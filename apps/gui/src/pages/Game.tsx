@@ -3,19 +3,22 @@ import { useQuery } from 'react-query'
 import { useParams } from 'react-router-dom'
 import type { GameAggregate } from '@tick-tack-block/referee/src/model/game/game'
 import { web3FromAddress } from '@polkadot/extension-dapp'
-import { Box, Flex } from '@chakra-ui/react'
+import { Box, Flex, useToast } from '@chakra-ui/react'
 import { useStore } from '@nanostores/react'
 import * as GB from '@tick-tack-block/gamelogic/src/gameboard'
 import { Market, Swap } from '@zeitgeistpm/sdk/dist/models'
 import * as wallet from '../state/wallet'
 import { GameBoard } from '../components/GameBoard'
 import { Betting } from '../components/Betting'
+import { extrinsicCallback, getTransactionError } from '@tick-tack-block/lib'
 
 export const GamePage = () => {
   let params = useParams()
 
   const sdk = useStore(wallet.$sdk)
   const selectedAccount = useStore(wallet.$selectedAccount)
+
+  const toast = useToast()
 
   const { data: game } = useQuery<GameAggregate>(
     ['game', params.id],
@@ -62,7 +65,44 @@ export const GamePage = () => {
       }),
     )
 
-    await tx.signAndSend(selectedAccount, extSigner)
+    await tx.signAndSend(
+      selectedAccount,
+      extSigner,
+      extrinsicCallback({
+        broadcastCallback: () => {
+          if (!toast.isActive('turn-broadcast')) {
+            toast({
+              id: 'turn-broadcast',
+              title: 'Broadcasting turn',
+              description: `Putting piece in ${coord[0]}:${coord[1]}`,
+              status: 'loading',
+              duration: 5000,
+              isClosable: true,
+            })
+          }
+        },
+        successCallback: data => {
+          toast({
+            id: 'turn-success',
+            title: 'Success',
+            description: 'Turn made!',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          })
+        },
+        failCallback: ({ index, error }) => {
+          toast({
+            id: 'turn-error',
+            title: 'Error.',
+            description: getTransactionError(sdk, index, error),
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+          })
+        },
+      }),
+    )
   }
 
   return (

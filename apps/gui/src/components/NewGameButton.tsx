@@ -113,14 +113,16 @@ export const NewGameButton = () => {
         extrinsicCallback({
           successMethod: 'PoolCreate',
           broadcastCallback: () => {
-            toast({
-              id: 'new-game-broadcast',
-              title: 'Broadcasting',
-              description: `Creating market and deploying pool.`,
-              status: 'loading',
-              duration: 5000,
-              isClosable: true,
-            })
+            if (!toast.isActive('new-game-broadcast')) {
+              toast({
+                id: 'new-game-broadcast',
+                title: 'Broadcasting',
+                description: `Creating market and deploying pool.`,
+                status: 'loading',
+                duration: 5000,
+                isClosable: true,
+              })
+            }
           },
           successCallback: data => {
             toast({

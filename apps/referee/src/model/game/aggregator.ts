@@ -73,7 +73,7 @@ export const run = async (db: Db, sdk: SDK) => {
 
             if (winningCategoryIndex) {
               await market.reportOutcome(oracle, {
-                categorical: winningCategoryIndex + 1,
+                categorical: winningCategoryIndex,
               })
             }
           }

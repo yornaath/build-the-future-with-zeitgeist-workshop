@@ -38,8 +38,6 @@ export const GamePage = () => {
     },
   )
 
-  console.log({ market })
-
   const { data: pool } = useQuery<Swap | null>(
     ['pool', market?.marketId],
     async () => {

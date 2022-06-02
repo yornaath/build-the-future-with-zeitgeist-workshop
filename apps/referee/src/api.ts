@@ -8,8 +8,10 @@ import * as game from './model/game/game'
 
 /**
  *
- * Api servert to serve the list of aggregated game,
- * And game by its slug
+ * Api server to serve:
+ *  - Referee address formatted to the chain in use
+ *  - List of aggregated games.
+ *  - Aggregated game by its marketId
  *
  * @param db mongodb.Db
  * @param sdk @zeitgeistpm/sdk

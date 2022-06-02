@@ -5,6 +5,7 @@ import {
   CategoryMetadata,
 } from '@zeitgeistpm/sdk/dist/types'
 import { blockNumberOf, readMultiHash, tail } from '@tick-tack-block/lib'
+import oracle from '../../oracle'
 import * as GameState from '@tick-tack-block/gamelogic/src/gamestate'
 import * as Cursor from '../cursor'
 import * as GameAggregate from './game'
@@ -30,7 +31,7 @@ export const run = async (db: Db, sdk: SDK) => {
 
     for (const event of events) {
       switch (event.type) {
-        case 'newgame':
+        case 'newgame': {
           const metadata: DecodedMarketMetadata & {
             categories: CategoryMetadata
           } = JSON.parse(await readMultiHash(event.market.metadata))
@@ -44,8 +45,9 @@ export const run = async (db: Db, sdk: SDK) => {
           })
 
           break
+        }
 
-        case 'turn':
+        case 'turn': {
           const game = await GameAggregate.get(db, event.marketId)
 
           if (game) {
@@ -56,9 +58,28 @@ export const run = async (db: Db, sdk: SDK) => {
           }
 
           break
+        }
 
-        case 'ended':
+        case 'ended': {
           const market = await sdk.models.fetchMarketData(event.marketId)
+          const game = await GameAggregate.get(db, market.marketId)
+
+          if (game) {
+            const winner = GameState.judge(game.state)
+
+            const winningCategoryIndex = market.categories?.findIndex(
+              cat => cat.name === winner,
+            )
+
+            if (winningCategoryIndex) {
+              await market.reportOutcome(oracle, {
+                categorical: winningCategoryIndex + 1,
+              })
+            }
+          }
+
+          break
+        }
       }
     }
 

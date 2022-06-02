@@ -49,6 +49,15 @@ export const create = (
   ],
 })
 
+export const judge = (state: GameState) => {
+  if (state.type === 'finished') {
+    return state.winner
+  }
+  const nextTurn = getPlayerTurn(state)
+  const winner = nextTurn === 'challenged' ? 'challenger' : 'challenged'
+  return state.players[winner]
+}
+
 export const turn = (state: GameState, turn: Turn): GameState => {
   if (!Object.values(state.players).includes(turn.player)) {
     return {

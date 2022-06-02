@@ -26,6 +26,8 @@ services:
     restart: unless-stopped
     env_file: ./.env
     environment:
+      - WORKSHOP_ORACLE_SEED=$WORKSHOP_ORACLE_SEED
+      - WORKSHOP_ORACLE_PASSPHRASE=$WORKSHOP_ORACLE_PASSPHRASE
       - MONGODB_HOST=mongodb
       - MONGODB_USER=$MONGODB_USER
       - MONGODB_PASSWORD=$MONGODB_PASSWORD

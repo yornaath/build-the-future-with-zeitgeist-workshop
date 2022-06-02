@@ -4,6 +4,17 @@
 
 This is the code for the talk given at the Polkadot Global Series North America edition for [Zeitgeist.pm](https://zeitgeist.pm/).
 
+## Build & Run
+
+Build the source and the run the docker containers rusing docker compose.
+You only need to start the gui service, this will allso start the referee and mongodb services.
+
+```bash
+yarn install
+yarn build
+docker compose up --build gui
+```
+
 ## Architecture
 
 This application has two main components/apps. It is built loosely on event sourcing principles for aggregating game state.

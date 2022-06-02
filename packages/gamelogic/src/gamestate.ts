@@ -22,7 +22,7 @@ export type GameStateBase = {
     challenged: string
   }
   state: GameBoard
-  events: string[]
+  events: { event: string; blockNumber: number }[]
 }
 
 export type Turn = {
@@ -41,7 +41,12 @@ export const create = (
   type: 'fresh',
   players,
   state: empty(),
-  events: [`${blockNumber}: FIGHT!`],
+  events: [
+    {
+      blockNumber,
+      event: `FIGHT!`,
+    },
+  ],
 })
 
 export const turn = (state: GameState, turn: Turn): GameState => {
@@ -50,7 +55,10 @@ export const turn = (state: GameState, turn: Turn): GameState => {
       ...state,
       events: [
         ...state.events,
-        `${turn.blockNumber}: ${turn.player} tried to make a move, but isnt in the game. Ignored.`,
+        {
+          blockNumber: turn.blockNumber,
+          event: `${turn.player} tried to make a move, but isnt in the game. Ignored.`,
+        },
       ],
     }
   }
@@ -60,7 +68,10 @@ export const turn = (state: GameState, turn: Turn): GameState => {
       ...state,
       events: [
         ...state.events,
-        `${turn.blockNumber}: ${turn.player} tried to make a move when the game was finished`,
+        {
+          blockNumber: turn.blockNumber,
+          event: `${turn.player} tried to make a move when the game was finished`,
+        },
       ],
     }
   }
@@ -72,7 +83,10 @@ export const turn = (state: GameState, turn: Turn): GameState => {
       winner: state.players.challenged,
       events: [
         ...state.events,
-        `${turn.blockNumber}: Challenger ${state.players.challenger} tried to make the first move, resulting is loss.`,
+        {
+          blockNumber: turn.blockNumber,
+          event: `Challenger ${state.players.challenger} tried to make the first move, resulting is loss.`,
+        },
       ],
     }
   }
@@ -89,7 +103,13 @@ export const turn = (state: GameState, turn: Turn): GameState => {
         ...next,
         type: 'finished',
         winner: state.players[winner],
-        events: [...next.events, `${turn.blockNumber}: Winner ${state.players[winner]}`],
+        events: [
+          ...next.events,
+          {
+            blockNumber: turn.blockNumber,
+            event: `Winner ${state.players[winner]}`,
+          },
+        ],
       }
     }
     return next
@@ -105,7 +125,10 @@ export const turn = (state: GameState, turn: Turn): GameState => {
     winner: winnerByCheating,
     events: [
       ...state.events,
-      `${turn.blockNumber}: Player ${turn.player} tried to make a move out of turn, forfeiting the game.`,
+      {
+        blockNumber: turn.blockNumber,
+        event: `Player ${turn.player} tried to make a move out of turn, forfeiting the game.`,
+      },
     ],
   }
 }
@@ -156,7 +179,9 @@ export const winningPatterns: Coordinate[][] = [
   ],
 ]
 
-export const hasWinner = (state: GameState): keyof GameState['players'] | null => {
+export const hasWinner = (
+  state: GameState,
+): keyof GameState['players'] | null => {
   const rows = winningPatterns.map(pattern => {
     return pattern.map(([x, y]) => state.state[y][x])
   })
@@ -176,7 +201,11 @@ export const makeMove = (state: GameState, turn: Turn): GameState => {
   const slot: Slot = state.players.challenger === turn.player ? 'x' : 'o'
   return update(state, {
     type: { $set: 'progressing' },
-    events: { $push: [`${turn.blockNumber}: ${slot} put in [${x}, ${y}]`] },
+    events: {
+      $push: [
+        { blockNumber: turn.blockNumber, event: `${slot} put in [${x}, ${y}]` },
+      ],
+    },
     state: { [y]: { $splice: [[x, 1, slot]] } },
   })
 }

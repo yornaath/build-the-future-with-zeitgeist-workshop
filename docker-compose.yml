@@ -32,6 +32,7 @@ services:
       - MONGODB_DATABASE=avatar
       - MONGODB_DOCKER_PORT=$MONGODB_DOCKER_PORT
       - REFEREE_API_PORT=$REFEREE_API_PORT
+      - VITE_ZEITGEIST_WS=$ZEITGEIST_WS
     ports:
       - "127.0.0.1:$REFEREE_API_PORT:$REFEREE_API_PORT"
     stdin_open: true
@@ -53,8 +54,6 @@ services:
       - db:/data/db
     networks:
       - tick-tack-zeitgeist-network
-
-  
 
 networks:
   tick-tack-zeitgeist-network:

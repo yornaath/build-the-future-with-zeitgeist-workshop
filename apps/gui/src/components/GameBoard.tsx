@@ -1,6 +1,7 @@
 import {
   Box,
   Flex,
+  Link,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -108,9 +109,17 @@ export const GameBoard = (props: GameBoardProps) => {
                 </PopoverHeader>
                 <PopoverBody>
                   {props.game.events.map(event => (
-                    <Box mb={2}>
-                      <Text fontSize={14}>{event}</Text>
-                    </Box>
+                    <Link
+                      target={'_blank'}
+                      href={`https://polkadot.js.org/apps/?rpc=${
+                        import.meta.env.VITE_ZEITGEIST_WS
+                      }/#/explorer/query/${event.blockNumber}`}>
+                      <Box mb={2}>
+                        <Text fontSize={14}>
+                          {event.blockNumber}: {event.event}
+                        </Text>
+                      </Box>
+                    </Link>
                   ))}
                 </PopoverBody>
               </PopoverContent>

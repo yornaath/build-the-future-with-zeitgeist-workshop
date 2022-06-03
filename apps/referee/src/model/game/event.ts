@@ -68,13 +68,16 @@ export const parseBlockEvents = (
         return turns
       }
 
-      // if (api.events.predictionMarkets.MarketEnded.is(event.event)) {
-      //   const [marketId] = (event as any).event.data.toHuman() as any
-      //   return {
-      //     type: 'ended',
-      //     marketId,
-      //   }
-      // }
+      /**
+       * MarketEnded events not yet implemented on chain.
+       */
+      if (false && api.events.predictionMarkets.MarketEnded.is(event.event)) {
+        const [marketId] = (event as any).event.data.toHuman() as any
+        return {
+          type: 'ended',
+          marketId,
+        }
+      }
 
       return null
     })

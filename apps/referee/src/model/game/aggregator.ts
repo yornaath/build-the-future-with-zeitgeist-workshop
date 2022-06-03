@@ -5,7 +5,12 @@ import {
 } from '@zeitgeistpm/sdk/dist/types'
 import { Vec } from '@polkadot/types'
 import { EventRecord, SignedBlock } from '@polkadot/types/interfaces'
-import { blockNumberOf, readMultiHash, tail } from '@tick-tack-block/lib'
+import {
+  BlockEventsPair,
+  blockNumberOf,
+  readMultiHash,
+  tail,
+} from '@tick-tack-block/lib'
 import * as GameState from '@tick-tack-block/gamelogic/src/gamestate'
 import * as GameAggregate from './game'
 import * as GameEvents from './events'
@@ -22,8 +27,7 @@ import * as GameEvents from './events'
 export const aggregate = async (
   sdk: SDK,
   aggregates: GameAggregate.GameAggregatePersistence,
-  block: SignedBlock,
-  events: Vec<EventRecord>,
+  [block, events]: BlockEventsPair,
 ) => {
   const blockNumber = blockNumberOf(block)
   const gameEvents = await GameEvents.parseBlockEvents(sdk, block, events)

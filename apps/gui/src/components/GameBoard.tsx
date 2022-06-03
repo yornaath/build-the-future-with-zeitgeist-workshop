@@ -215,8 +215,8 @@ const EventsList = (props: { game: GameAggregate.GameAggregate }) => {
 
     let aggregates = GameAggregate.memory({})
 
-    for (const [block, blockEvents] of blocks) {
-      await aggregate(sdk, aggregates, block, blockEvents)
+    for (const blockEventsPair of blocks) {
+      await aggregate(sdk, aggregates, blockEventsPair)
     }
 
     const auditedGame = (await aggregates.get(props.game.marketId)) || { state: null }

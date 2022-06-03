@@ -18,11 +18,10 @@ import { aggregate } from './model/game/aggregator'
 
 export const aggregateGames = async (db: Db, sdk: SDK) => {
   const cursor = await Cursor.get(db, sdk, 'games')
-  const aggregates = GameAggregate.db(db)
+  const persistence = GameAggregate.db(db)
 
   return tail(sdk.api, cursor, async ([block, blockEvents]) => {
-    const blockNumber = blockNumberOf(block)
-    await aggregate(sdk, aggregates, block, blockEvents)
-    await Cursor.put(db, 'games', blockNumber)
+    await aggregate(sdk, persistence, [block, blockEvents])
+    await Cursor.put(db, 'games', blockNumberOf(block))
   })
 }

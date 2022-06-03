@@ -2,7 +2,11 @@ import SDK from '@zeitgeistpm/sdk'
 import { EventRecord, SignedBlock } from '@polkadot/types/interfaces'
 import * as GS from '@tick-tack-block/gamelogic/src/gamestate'
 import { Vec } from '@polkadot/types'
-import { blockNumberOf, extrinsicsAtEvent } from '@tick-tack-block/lib'
+import {
+  BlockEventsPair,
+  blockNumberOf,
+  extrinsicsAtEvent,
+} from '@tick-tack-block/lib'
 
 /**
  * Represents a chain game event.
@@ -18,14 +22,13 @@ export type GameEvent =
  * Extracts the relevant game events from the block events and extrinsics
  *
  * @param api ApiProise
- * @param block SignedBlock
+ * @param blockEventPair BlockEventsPair
  * @returns GameEvent[]
  */
 
 export const parseBlockEvents = (
   sdk: SDK,
-  block: SignedBlock,
-  events: Vec<EventRecord>,
+  [block, events]: BlockEventsPair,
 ): GameEvent[] => {
   const api = sdk.api
   const blockNumber = blockNumberOf(block)
@@ -67,14 +70,13 @@ export const parseBlockEvents = (
         return turns
       }
 
-      // if (api.events.predictionMarkets.MarketEnded.is(event.event)) {
-      //   const [marketId, marketAccountId, market] =
-      //     event.event.data.toHuman() as any
-      //   return {
-      //     type: 'ended',
-      //     marketId,
-      //   }
-      // }
+      if (api.events.predictionMarkets.MarketEnded.is(event.event)) {
+        const [marketId] = (event as any).event.data.toHuman() as any
+        return {
+          type: 'ended',
+          marketId,
+        }
+      }
 
       return null
     })

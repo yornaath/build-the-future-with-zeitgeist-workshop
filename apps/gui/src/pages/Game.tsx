@@ -107,10 +107,16 @@ export const GamePage = () => {
 
   return (
     <Box>
-      {game && (
+      {game && market && pool && (
         <>
           <Flex justifyContent={'center'} mb={12}>
-            <GameBoard size={28} onClick={onClickSlot} game={game} />
+            <GameBoard
+              size={28}
+              onClick={onClickSlot}
+              market={market}
+              pool={pool}
+              game={game}
+            />
           </Flex>
         </>
       )}

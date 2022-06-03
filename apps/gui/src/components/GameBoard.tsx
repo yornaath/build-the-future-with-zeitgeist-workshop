@@ -16,6 +16,7 @@ import {
   Tooltip,
   useToast,
 } from '@chakra-ui/react'
+import { Market, Swap } from '@zeitgeistpm/sdk/dist/models'
 import hash from 'object-hash'
 import { Repo, shortenAddress, slice } from '@tick-tack-block/lib'
 import { BsPatchCheckFill } from 'react-icons/bs'
@@ -30,9 +31,12 @@ import * as Game from '@tick-tack-block/referee/src/model/game'
 import { useStore } from '@nanostores/react'
 import * as wallet from '../state/wallet'
 import { useState } from 'react'
+import { web3FromAddress } from '@polkadot/extension-dapp'
 
 export type GameBoardProps = {
   game: Game.GameAggregate
+  market: Market
+  pool: Swap
   size: number
   onClick: (coord: GB.Coordinate) => void
 }
@@ -120,7 +124,7 @@ export const GameBoard = (props: GameBoardProps) => {
                   <b>Events</b>
                 </PopoverHeader>
                 <PopoverBody>
-                  <EventsList game={props.game} />
+                  <Audit game={props.game} market={props.market} pool={props.pool} />
                 </PopoverBody>
               </PopoverContent>
             </Popover>
@@ -199,8 +203,9 @@ export const GameBoard = (props: GameBoardProps) => {
   )
 }
 
-const EventsList = (props: { game: Game.GameAggregate }) => {
+const Audit = (props: { game: Game.GameAggregate; market: Market; pool: Swap }) => {
   const sdk = useStore(wallet.$sdk)
+  const selectedAccount = useStore(wallet.$selectedAccount)
 
   const [auditFetchProgress, setAuditFetchProgress] = useState(0)
   const [refereGameHash, setRefereGameHash] = useState<string>()
@@ -220,10 +225,26 @@ const EventsList = (props: { game: Game.GameAggregate }) => {
 
     const auditedGame = (await aggregates.get(props.game.marketId)) || { state: null }
 
-    setRefereGameHash(hash(props.game.state))
-    setAuditedGameHash(hash(auditedGame?.state))
+    setRefereGameHash(hash.sha1(props.game.state))
+    setAuditedGameHash(hash.sha1(auditedGame?.state))
 
     setAuditFetchProgress(0)
+  }
+
+  const onClickDispute = async () => {
+    const reportedWinnerAssetIndex = props.market.categories?.findIndex(
+      cat =>
+        props.game.state.type === 'finished' && props.game.state.winner === cat.name,
+    )
+
+    if (typeof reportedWinnerAssetIndex === 'number') {
+      const injected = await web3FromAddress(selectedAccount)
+      const extSigner = { address: selectedAccount, signer: injected.signer }
+
+      await props.market.dispute(extSigner, {
+        categorical: reportedWinnerAssetIndex === 0 ? 1 : 0,
+      })
+    }
   }
 
   return (
@@ -285,7 +306,12 @@ const EventsList = (props: { game: Game.GameAggregate }) => {
             {refereGameHash === auditedGameHash ? (
               <BsPatchCheckFill size={32} />
             ) : (
-              <MdError size={32} />
+              <Flex alignItems="center">
+                <MdError size={32} />
+                <Button onClick={onClickDispute} size={'sm'} ml={2}>
+                  Dispute
+                </Button>
+              </Flex>
             )}
           </Flex>
         </Box>

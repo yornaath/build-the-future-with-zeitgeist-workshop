@@ -61,8 +61,6 @@ export const NewGameButton = () => {
     return fetch('http://localhost:3000/referee').then(res => res.json())
   })
 
-  console.log(referee)
-
   const onNewGameSubmitted = async (game: GameForm) => {
     setIsTransacting(true)
     try {

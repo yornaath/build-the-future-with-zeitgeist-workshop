@@ -16,7 +16,7 @@ import * as Game from './model/game'
  */
 
 export const aggregateGames = async (db: Db, sdk: SDK) => {
-  const cursor = 1375334 // await Cursor.get(db, sdk, 'games')
+  const cursor = await Cursor.get(db, sdk, 'games')
 
   const persistence = Repo.db<Game.GameAggregate, 'marketId'>(
     db,

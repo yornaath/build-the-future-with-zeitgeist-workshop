@@ -269,7 +269,7 @@ const EventsList = (props: { game: Game.GameAggregate }) => {
             <b>Referree state: </b> {refereGameHash}
           </Text>
           <Text fontSize={'xs'} mb={5}>
-            <b>Referree state: </b> {auditedGameHash}
+            <b>Local state: </b> {auditedGameHash}
           </Text>
           <Flex
             mb={4}

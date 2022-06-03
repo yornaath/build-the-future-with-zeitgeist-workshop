@@ -1,7 +1,7 @@
 import ms from 'ms'
 import { useQuery } from 'react-query'
 import { useParams } from 'react-router-dom'
-import type { GameAggregate } from '@tick-tack-block/referee/src/model/game/game'
+import type { GameAggregate } from '@tick-tack-block/referee/src/model/game'
 import { web3FromAddress } from '@polkadot/extension-dapp'
 import { Box, Flex, useToast } from '@chakra-ui/react'
 import { useStore } from '@nanostores/react'

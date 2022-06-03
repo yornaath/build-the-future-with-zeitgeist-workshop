@@ -2,7 +2,7 @@ import { ApiPromise } from '@polkadot/api'
 import { VoidFn } from '@polkadot/api/types'
 import { Vec } from '@polkadot/types'
 import limit from 'p-limit'
-import { EventRecord, SignedBlock } from '@polkadot/types/interfaces'
+import { Block, EventRecord, SignedBlock } from '@polkadot/types/interfaces'
 import { range } from './array'
 
 /**
@@ -37,20 +37,45 @@ export const latestBlock = async (api: ApiPromise) => api.rpc.chain.getBlock()
 export const tail = async (
   api: ApiPromise,
   nr: number,
-  cb: (block: SignedBlock) => Promise<void>,
+  cb: (block: BlockEventsPair) => Promise<void>,
 ): Promise<VoidFn | undefined> => {
   const block = await blockAt(api, nr)
 
   if (!block) {
     return await api.rpc.chain.subscribeFinalizedHeads(header => {
       return api.rpc.chain.getBlock(header.hash).then(async block => {
-        return await cb(block)
+        return await cb(await mapEventsToBlock(api, block))
       })
     })
   } else {
-    await cb(block)
+    await cb(await mapEventsToBlock(api, block))
     return tail(api, nr + 1, cb)
   }
+}
+
+/**
+ * Block and Events Tuple
+ */
+
+export type BlockEventsPair = [SignedBlock, Vec<EventRecord>]
+
+/**
+ *
+ * Fetch Events for a given block and return the pair.
+ *
+ * @param api ApiPromise
+ * @param block SignedBlock
+ * @returns BlockEventsPair
+ */
+
+export const mapEventsToBlock = async (
+  api: ApiPromise,
+  block: SignedBlock,
+): Promise<BlockEventsPair> => {
+  const blockEvents = await (
+    await api.at(block.block.header.hash.toHex())
+  ).query.system.events<Vec<EventRecord>>()
+  return [block, blockEvents]
 }
 
 /**
@@ -67,7 +92,7 @@ export const slice = async (
   from: number,
   to: number,
   progressListener?: (percentage: number) => void,
-): Promise<SignedBlock[]> => {
+): Promise<BlockEventsPair[]> => {
   const concurrency = limit(20)
   const total = to - from
   let processed = 0
@@ -75,14 +100,16 @@ export const slice = async (
     await Promise.all(
       range(from, to).map(blockNumber =>
         concurrency(async () => {
-          const block = blockAt(api, blockNumber)
+          const block = await blockAt(api, blockNumber)
           processed++
           progressListener?.((100 / total) * processed)
-          return block
+          if (block) {
+            return await mapEventsToBlock(api, block)
+          }
         }),
       ),
     )
-  ).filter((block): block is SignedBlock => Boolean(block))
+  ).filter((block): block is BlockEventsPair => Boolean(block))
 }
 
 /**

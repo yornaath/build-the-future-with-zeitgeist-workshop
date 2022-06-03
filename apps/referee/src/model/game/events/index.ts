@@ -7,6 +7,7 @@ import { blockNumberOf, extrinsicsAtEvent } from '@tick-tack-block/lib'
 /**
  * Represents a chain game event.
  */
+
 export type GameEvent =
   | { type: 'newgame'; market: any }
   | { type: 'turn'; marketId: number; turn: GS.Turn }
@@ -20,18 +21,16 @@ export type GameEvent =
  * @param block SignedBlock
  * @returns GameEvent[]
  */
-export const parseBlockEvents = async (
+
+export const parseBlockEvents = (
   sdk: SDK,
   block: SignedBlock,
-): Promise<GameEvent[]> => {
+  events: Vec<EventRecord>,
+): GameEvent[] => {
   const api = sdk.api
   const blockNumber = blockNumberOf(block)
 
-  const blockEvents = await (
-    await api.at(block.block.header.hash.toHex())
-  ).query.system.events<Vec<EventRecord>>()
-
-  const events = blockEvents
+  const gameEvents = events
     .map<GameEvent | GameEvent[] | null>(event => {
       if (api.events.predictionMarkets.MarketCreated.is(event.event)) {
         const [marketId, marketAccountId, market] =
@@ -43,7 +42,7 @@ export const parseBlockEvents = async (
       }
 
       if (api.events.system.Remarked.is(event.event)) {
-        const extrinsics = extrinsicsAtEvent(blockEvents, block, {
+        const extrinsics = extrinsicsAtEvent(events, block, {
           method: 'remarkWithEvent',
         })
 
@@ -79,7 +78,7 @@ export const parseBlockEvents = async (
 
       return null
     })
-    .filter((event): event is GameEvent => Boolean(event))
+    .filter((gameEvent): gameEvent is GameEvent => Boolean(gameEvent))
 
-  return events.flat()
+  return gameEvents.flat()
 }

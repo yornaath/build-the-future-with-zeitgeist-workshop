@@ -20,9 +20,9 @@ export const aggregateGames = async (db: Db, sdk: SDK) => {
   const cursor = await Cursor.get(db, sdk, 'games')
   const aggregates = GameAggregate.db(db)
 
-  return tail(sdk.api, cursor, async block => {
+  return tail(sdk.api, cursor, async ([block, blockEvents]) => {
     const blockNumber = blockNumberOf(block)
-    await aggregate(sdk, aggregates, block)
+    await aggregate(sdk, aggregates, block, blockEvents)
     await Cursor.put(db, 'games', blockNumber)
   })
 }

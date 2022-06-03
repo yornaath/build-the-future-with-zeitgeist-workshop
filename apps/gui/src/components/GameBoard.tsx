@@ -14,8 +14,12 @@ import {
   Spinner,
   Text,
   Tooltip,
+  useToast,
 } from '@chakra-ui/react'
+import hash from 'object-hash'
 import { shortenAddress, slice } from '@tick-tack-block/lib'
+import { BsPatchCheckFill } from 'react-icons/bs'
+import { MdError } from 'react-icons/md'
 import { AiOutlineAudit } from 'react-icons/ai'
 import { IoIosClose } from 'react-icons/io'
 import { BiCircle } from 'react-icons/bi'
@@ -29,7 +33,7 @@ import * as wallet from '../state/wallet'
 import { useState } from 'react'
 
 export type GameBoardProps = {
-  game: GS.GameState
+  game: GameAggregate.GameAggregate
   size: number
   onClick: (coord: GB.Coordinate) => void
 }
@@ -41,7 +45,7 @@ export const GameBoard = (props: GameBoardProps) => {
     <Box>
       <Flex justifyContent={'center'}>
         <Box mb={2} mt={-2} ml={-2}>
-          {props.game.state.map((row, y) => (
+          {props.game.state.state.map((row, y) => (
             <Flex key={y} w="fit-content">
               {row.map((slot, x) => (
                 <Box key={x} h={props.size} w={props.size} p={2}>
@@ -59,7 +63,7 @@ export const GameBoard = (props: GameBoardProps) => {
                     {slot == 'x' ? (
                       <IoIosClose
                         color={
-                          selectedAccount === props.game.players.challenger
+                          selectedAccount === props.game.state.players.challenger
                             ? '#ac2dba'
                             : '#1a1a1a'
                         }
@@ -68,7 +72,7 @@ export const GameBoard = (props: GameBoardProps) => {
                     ) : slot === 'o' ? (
                       <BiCircle
                         color={
-                          selectedAccount === props.game.players.challenged
+                          selectedAccount === props.game.state.players.challenged
                             ? '#ac2dba'
                             : '#1a1a1a'
                         }
@@ -87,14 +91,16 @@ export const GameBoard = (props: GameBoardProps) => {
       <Box>
         <Flex mb={2}>
           <Box flex="1">
-            {props.game.type === 'finished' ? (
+            {props.game.state.type === 'finished' ? (
               <Text>
-                <b>Winner:</b> {shortenAddress(props.game.winner)}
+                <b>Winner:</b> {shortenAddress(props.game.state.winner)}
               </Text>
             ) : (
               <Text>
                 <b>Next turn:</b>{' '}
-                {shortenAddress(props.game.players[GS.getPlayerTurn(props.game)])}
+                {shortenAddress(
+                  props.game.state.players[GS.getPlayerTurn(props.game.state)],
+                )}
               </Text>
             )}
           </Box>
@@ -128,20 +134,20 @@ export const GameBoard = (props: GameBoardProps) => {
             </Text>
             <Tooltip
               backgroundColor={
-                selectedAccount === props.game.players.challenger
+                selectedAccount === props.game.state.players.challenger
                   ? 'seer.500'
                   : 'gray.800'
               }
               label={
-                selectedAccount === props.game.players.challenger
+                selectedAccount === props.game.state.players.challenger
                   ? 'Your turn!'
                   : 'Other players turn'
               }>
-              {GS.getPlayerTurn(props.game) === 'challenger' ? (
+              {GS.getPlayerTurn(props.game.state) === 'challenger' ? (
                 <Box
                   mr={2}
                   background={
-                    selectedAccount === props.game.players.challenger
+                    selectedAccount === props.game.state.players.challenger
                       ? '#ac2dba'
                       : '#1a1a1a'
                   }
@@ -153,7 +159,7 @@ export const GameBoard = (props: GameBoardProps) => {
                 ''
               )}
             </Tooltip>
-            {shortenAddress(props.game.players.challenger)}
+            {shortenAddress(props.game.state.players.challenger)}
           </Flex>
           <Flex alignItems={'center'}>
             <Text fontWeight={'bold'} flex={1}>
@@ -161,20 +167,20 @@ export const GameBoard = (props: GameBoardProps) => {
             </Text>
             <Tooltip
               backgroundColor={
-                selectedAccount === props.game.players.challenged
+                selectedAccount === props.game.state.players.challenged
                   ? 'seer.500'
                   : 'gray.800'
               }
               label={
-                selectedAccount === props.game.players.challenged
+                selectedAccount === props.game.state.players.challenged
                   ? 'Your turn'
                   : 'Other players turn'
               }>
-              {GS.getPlayerTurn(props.game) === 'challenged' ? (
+              {GS.getPlayerTurn(props.game.state) === 'challenged' ? (
                 <Box
                   mr={2}
                   background={
-                    selectedAccount === props.game.players.challenged
+                    selectedAccount === props.game.state.players.challenged
                       ? '#ac2dba'
                       : '#1a1a1a'
                   }
@@ -186,7 +192,7 @@ export const GameBoard = (props: GameBoardProps) => {
                 ''
               )}
             </Tooltip>
-            {shortenAddress(props.game.players.challenged)}
+            {shortenAddress(props.game.state.players.challenged)}
           </Flex>
         </Box>
       </Box>
@@ -194,27 +200,37 @@ export const GameBoard = (props: GameBoardProps) => {
   )
 }
 
-const EventsList = (props: { game: GS.GameState }) => {
+const EventsList = (props: { game: GameAggregate.GameAggregate }) => {
   const sdk = useStore(wallet.$sdk)
 
   const [auditFetchProgress, setAuditFetchProgress] = useState(0)
+  const [refereGameHash, setRefereGameHash] = useState<string>()
+  const [auditedGameHash, setAuditedGameHash] = useState<string>()
 
   const onClickAudit = async () => {
-    const start = props.game.events[0].blockNumber
-    const end = props.game.events[props.game.events.length - 1].blockNumber
+    const start = props.game.state.events[0].blockNumber
+    const end = props.game.state.events[props.game.state.events.length - 1].blockNumber
+
     const blocks = await slice(sdk.api, start, end, setAuditFetchProgress)
+
     let aggregates = GameAggregate.memory({})
-    for (const block of blocks) {
-      await aggregate(sdk, aggregates, block)
+
+    for (const [block, blockEvents] of blocks) {
+      await aggregate(sdk, aggregates, block, blockEvents)
     }
-    console.log(await aggregates.list())
+
+    const auditedGame = (await aggregates.get(props.game.marketId)) || { state: null }
+
+    setRefereGameHash(hash(props.game.state))
+    setAuditedGameHash(hash(auditedGame?.state))
+
     setAuditFetchProgress(0)
   }
 
   return (
     <>
       <Box mb="4">
-        {props.game.events.map(event => (
+        {props.game.state.events.map(event => (
           <Link
             target={'_blank'}
             href={`https://polkadot.js.org/apps/?rpc=${
@@ -248,6 +264,28 @@ const EventsList = (props: { game: GS.GameState }) => {
           Audit
         </Button>
       </Flex>
+      {refereGameHash && auditedGameHash ? (
+        <Box mt={4}>
+          <Text fontSize={'xs'} mb={1}>
+            <b>Referree state: </b> {refereGameHash}
+          </Text>
+          <Text fontSize={'xs'} mb={5}>
+            <b>Referree state: </b> {auditedGameHash}
+          </Text>
+          <Flex
+            mb={4}
+            color={refereGameHash === auditedGameHash ? 'seer.500' : 'red.500'}
+            justifyContent="center">
+            {refereGameHash === auditedGameHash ? (
+              <BsPatchCheckFill size={32} />
+            ) : (
+              <MdError size={32} />
+            )}
+          </Flex>
+        </Box>
+      ) : (
+        ''
+      )}
     </>
   )
 }

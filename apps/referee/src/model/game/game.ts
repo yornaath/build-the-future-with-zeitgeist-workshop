@@ -15,14 +15,16 @@ export type GameAggregate = {
 }
 
 export type GameAggregatePersistence = {
-  get(marketId: number): Promise<GameAggregate | null>
+  get(marketId: number | string): Promise<GameAggregate | null>
   put(game: GameAggregate): Promise<void>
   list(): Promise<GameAggregate[]>
 }
 
 export const db = (db: Db): GameAggregatePersistence => {
   const get = async (marketId: number): Promise<GameAggregate | null> => {
-    return await db.collection('games').findOne<GameAggregate>({ marketId })
+    return await db
+      .collection('games')
+      .findOne<GameAggregate>({ marketId: Number(marketId) })
   }
 
   const put = async (game: GameAggregate) => {
@@ -41,14 +43,14 @@ export const db = (db: Db): GameAggregatePersistence => {
 }
 
 export const memory = (
-  db: Record<string, GameAggregate>,
+  db: Record<number, GameAggregate>,
 ): GameAggregatePersistence => {
   const get = async (marketId: number): Promise<GameAggregate | null> => {
     return await db[marketId]
   }
 
   const put = async (game: GameAggregate) => {
-    db[game.marketId] = game
+    db[Number(game.marketId)] = game
   }
 
   const list = async () => {

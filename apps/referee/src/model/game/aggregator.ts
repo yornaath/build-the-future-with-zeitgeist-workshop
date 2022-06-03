@@ -1,37 +1,14 @@
-import { Db } from 'mongodb'
 import SDK from '@zeitgeistpm/sdk'
 import {
   DecodedMarketMetadata,
   CategoryMetadata,
 } from '@zeitgeistpm/sdk/dist/types'
-import { SignedBlock } from '@polkadot/types/interfaces'
+import { Vec } from '@polkadot/types'
+import { EventRecord, SignedBlock } from '@polkadot/types/interfaces'
 import { blockNumberOf, readMultiHash, tail } from '@tick-tack-block/lib'
 import * as GameState from '@tick-tack-block/gamelogic/src/gamestate'
-import * as Cursor from '../cursor'
 import * as GameAggregate from './game'
 import * as GameEvents from './events'
-
-/**
- * Run the game state aggregator.
- *
- * Tails the chain from the last processed block, looks for the relevant events
- * like MarketCreated(new game), Remarked(turn) and MarketEnded(report outcome)
- *
- * @param db mongodb.Db
- * @param sdk @zeitgeistpm/sdk
- * @returns Promise<VoidFn | undefined>
- */
-
-export const runWithDb = async (db: Db, sdk: SDK) => {
-  const cursor = await Cursor.get(db, sdk, 'games')
-  const aggregates = GameAggregate.db(db)
-
-  return tail(sdk.api, cursor, async block => {
-    const blockNumber = blockNumberOf(block)
-    await aggregate(sdk, aggregates, block)
-    await Cursor.put(db, 'games', blockNumber)
-  })
-}
 
 /**
  *
@@ -41,15 +18,17 @@ export const runWithDb = async (db: Db, sdk: SDK) => {
  * @param aggregates GameAggregatePersistence
  * @param block SignesBlock
  */
+
 export const aggregate = async (
   sdk: SDK,
   aggregates: GameAggregate.GameAggregatePersistence,
   block: SignedBlock,
+  events: Vec<EventRecord>,
 ) => {
   const blockNumber = blockNumberOf(block)
-  const events = await GameEvents.parseBlockEvents(sdk, block)
+  const gameEvents = await GameEvents.parseBlockEvents(sdk, block, events)
 
-  for (const event of events) {
+  for (const event of gameEvents) {
     switch (event.type) {
       case 'newgame': {
         const metadata: DecodedMarketMetadata & {
@@ -79,27 +58,6 @@ export const aggregate = async (
 
         break
       }
-
-      // case 'ended': {
-      //   const market = await sdk.models.fetchMarketData(event.marketId)
-      //   const game = await aggregates.get(market.marketId)
-
-      //   if (game) {
-      //     const winner = GameState.judge(game.state)
-
-      //     const winningCategoryIndex = market.categories?.findIndex(
-      //       cat => cat.name === winner,
-      //     )
-
-      //     if (winningCategoryIndex) {
-      //       await market.reportOutcome(oracle, {
-      //         categorical: winningCategoryIndex,
-      //       })
-      //     }
-      //   }
-
-      //   break
-      // }
     }
   }
 }

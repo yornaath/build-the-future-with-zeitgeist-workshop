@@ -27,7 +27,7 @@ export const GamePage = () => {
     },
     {
       enabled: Boolean(params.id),
-      refetchInterval: ms('3 seconds'),
+      refetchInterval: ms('2 seconds'),
     },
   )
 

@@ -1,9 +1,8 @@
 import { Db } from 'mongodb'
 import SDK from '@zeitgeistpm/sdk'
-import { blockNumberOf, tail } from '@tick-tack-block/lib'
+import { blockNumberOf, Repo, tail } from '@tick-tack-block/lib'
 import * as Cursor from './model/cursor'
-import * as GameAggregate from './model/game/game'
-import { aggregate } from './model/game/aggregator'
+import * as Game from './model/game'
 
 /**
  * Run the game state aggregator.
@@ -17,11 +16,16 @@ import { aggregate } from './model/game/aggregator'
  */
 
 export const aggregateGames = async (db: Db, sdk: SDK) => {
-  const cursor = await Cursor.get(db, sdk, 'games')
-  const persistence = GameAggregate.db(db)
+  const cursor = 1375334 // await Cursor.get(db, sdk, 'games')
+
+  const persistence = Repo.db<Game.GameAggregate, 'marketId'>(
+    db,
+    'games',
+    'marketId',
+  )
 
   return tail(sdk.api, cursor, async ([block, blockEvents]) => {
-    await aggregate(sdk, persistence, [block, blockEvents])
+    await Game.aggregate(sdk, persistence, [block, blockEvents])
     await Cursor.put(db, 'games', blockNumberOf(block))
   })
 }

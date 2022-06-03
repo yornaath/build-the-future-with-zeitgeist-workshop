@@ -17,7 +17,7 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import hash from 'object-hash'
-import { shortenAddress, slice } from '@tick-tack-block/lib'
+import { Repo, shortenAddress, slice } from '@tick-tack-block/lib'
 import { BsPatchCheckFill } from 'react-icons/bs'
 import { MdError } from 'react-icons/md'
 import { AiOutlineAudit } from 'react-icons/ai'
@@ -26,14 +26,13 @@ import { BiCircle } from 'react-icons/bi'
 import { IoMdListBox } from 'react-icons/io'
 import * as GS from '@tick-tack-block/gamelogic/src/gamestate'
 import * as GB from '@tick-tack-block/gamelogic/src/gameboard'
-import * as GameAggregate from '@tick-tack-block/referee/src/model/game/game'
-import { aggregate } from '@tick-tack-block/referee/src/model/game/aggregator'
+import * as Game from '@tick-tack-block/referee/src/model/game'
 import { useStore } from '@nanostores/react'
 import * as wallet from '../state/wallet'
 import { useState } from 'react'
 
 export type GameBoardProps = {
-  game: GameAggregate.GameAggregate
+  game: Game.GameAggregate
   size: number
   onClick: (coord: GB.Coordinate) => void
 }
@@ -200,7 +199,7 @@ export const GameBoard = (props: GameBoardProps) => {
   )
 }
 
-const EventsList = (props: { game: GameAggregate.GameAggregate }) => {
+const EventsList = (props: { game: Game.GameAggregate }) => {
   const sdk = useStore(wallet.$sdk)
 
   const [auditFetchProgress, setAuditFetchProgress] = useState(0)
@@ -213,10 +212,10 @@ const EventsList = (props: { game: GameAggregate.GameAggregate }) => {
 
     const blocks = await slice(sdk.api, start, end, setAuditFetchProgress)
 
-    let aggregates = GameAggregate.memory({})
+    let aggregates = Repo.memory<Game.GameAggregate, 'marketId'>({}, 'marketId')
 
     for (const blockEventsPair of blocks) {
-      await aggregate(sdk, aggregates, blockEventsPair)
+      await Game.aggregate(sdk, aggregates, blockEventsPair)
     }
 
     const auditedGame = (await aggregates.get(props.game.marketId)) || { state: null }

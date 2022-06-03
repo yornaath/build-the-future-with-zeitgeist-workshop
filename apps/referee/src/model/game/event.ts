@@ -1,7 +1,5 @@
 import SDK from '@zeitgeistpm/sdk'
-import { EventRecord, SignedBlock } from '@polkadot/types/interfaces'
 import * as GS from '@tick-tack-block/gamelogic/src/gamestate'
-import { Vec } from '@polkadot/types'
 import {
   BlockEventsPair,
   blockNumberOf,

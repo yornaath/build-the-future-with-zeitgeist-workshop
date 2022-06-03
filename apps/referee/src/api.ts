@@ -4,7 +4,8 @@ import cors from '@fastify/cors'
 import { Db } from 'mongodb'
 import SDK from '@zeitgeistpm/sdk'
 import oracle from './model/oracle'
-import * as GameAggregate from './model/game/game'
+import * as Game from './model/game'
+import { Repo } from '@tick-tack-block/lib'
 
 /**
  *
@@ -20,7 +21,11 @@ import * as GameAggregate from './model/game/game'
 export const serve = async (db: Db, sdk: SDK) => {
   const server = fastify()
 
-  const aggregates = GameAggregate.db(db)
+  const persistence = Repo.db<Game.GameAggregate, 'marketId'>(
+    db,
+    'games',
+    'marketId',
+  )
 
   server.register(cors)
 
@@ -35,11 +40,11 @@ export const serve = async (db: Db, sdk: SDK) => {
   })
 
   server.get('/games', async () => {
-    return await aggregates.list()
+    return await persistence.list()
   })
 
   server.get('/games/:marketId', async req => {
-    return await aggregates.get((req.params as any).marketId)
+    return await persistence.get((req.params as any).marketId)
   })
 
   await server.listen(

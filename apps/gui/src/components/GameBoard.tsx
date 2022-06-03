@@ -254,14 +254,21 @@ const EventsList = (props: { game: Game.GameAggregate }) => {
             ''
           )}
         </Box>
-        <Button
-          onClick={onClickAudit}
-          rightIcon={<AiOutlineAudit />}
-          colorScheme="seer"
-          size={'xs'}
-          float={'right'}>
-          Audit
-        </Button>
+        <Tooltip
+          hasArrow
+          placement="top"
+          label={
+            'This will fetch the blocks and events from the chain and build the gamestate locally, hashing the reported referee state and local state and comparing them.'
+          }>
+          <Button
+            onClick={onClickAudit}
+            rightIcon={<AiOutlineAudit />}
+            colorScheme="seer"
+            size={'xs'}
+            float={'right'}>
+            Audit
+          </Button>
+        </Tooltip>
       </Flex>
       {refereGameHash && auditedGameHash ? (
         <Box mt={4}>

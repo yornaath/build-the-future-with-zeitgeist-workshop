@@ -76,6 +76,21 @@ export const turn = (state: GameState, turn: Turn): GameState => {
     }
   }
 
+  if (state.type === 'fresh' && turn.player === state.players.challenger) {
+    return {
+      ...state,
+      type: 'finished',
+      winner: state.players.challenged,
+      events: [
+        ...state.events,
+        {
+          blockNumber: turn.blockNumber,
+          event: `Challenger ${state.players.challenger} tried to make the first move, resulting is loss.`,
+        },
+      ],
+    }
+  }
+
   if (state.type === 'fresh') {
     return makeMove(state, turn)
   }

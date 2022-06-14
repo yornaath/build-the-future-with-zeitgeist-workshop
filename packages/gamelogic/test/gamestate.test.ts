@@ -1,5 +1,10 @@
 import * as GS from '../src/gamestate'
-import { challenged, challenger, createFreshState, winningMoves } from './fixtures'
+import {
+  challenged,
+  challenger,
+  createFreshState,
+  winningMoves,
+} from './fixtures'
 
 describe('GameState', () => {
   test('Full game.', () => {
@@ -119,7 +124,9 @@ describe('GameState', () => {
       coord: [0, 1],
     })
 
-    expect(state.events.filter(e => e.match('out of turn'))?.length).toBe(1)
+    expect(state.events.filter(e => e.event.match('out of turn'))?.length).toBe(
+      1,
+    )
     expect(state.type).toBe('finished')
     expect((state as GS.FinishedGame).winner).toBe(state.players.challenger)
 
@@ -141,7 +148,9 @@ describe('GameState', () => {
       coord: [0, 2],
     })
 
-    expect(state.events.filter(e => e.match('out of turn'))?.length).toBe(1)
+    expect(state.events.filter(e => e.event.match('out of turn'))?.length).toBe(
+      1,
+    )
     expect(state.type).toBe('finished')
     expect((state as GS.FinishedGame).winner).toBe(state.players.challenged)
   })

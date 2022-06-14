@@ -11,6 +11,7 @@ import {
 } from '@tick-tack-block/lib'
 import * as GameState from '@tick-tack-block/gamelogic/src/gamestate'
 import * as GameEvents from './event'
+import oracle from '../oracle'
 
 /**
  * GameAggregate Model
@@ -23,6 +24,7 @@ import * as GameEvents from './event'
 export type GameAggregate = {
   marketId: string
   state: GameState.GameState
+  resolved?: boolean
 }
 
 /**
@@ -71,6 +73,29 @@ export const aggregate = async (
         }
 
         break
+      }
+
+      case 'ended': {
+        const game = await repo.get(event.marketId.toString())
+
+        if (!game?.resolved && game?.state.type === 'finished') {
+          const winner = game.state.winner
+
+          const market = await sdk.models.fetchMarketData(
+            Number(event.marketId.toString()),
+          )
+
+          const assetId = market.categories?.findIndex(
+            cat => cat.name === winner,
+          )
+
+          if (!assetId) {
+            console.warn('Invariant')
+            break
+          }
+
+          await market.reportOutcome(oracle, { categorical: assetId })
+        }
       }
     }
   }

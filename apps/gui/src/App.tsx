@@ -1,4 +1,5 @@
 import React from 'react'
+import { Global } from '@emotion/react'
 import { Box, Spinner } from '@chakra-ui/react'
 import { useStore } from '@nanostores/react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
@@ -6,7 +7,6 @@ import * as wallet from './state/wallet'
 import { IndexPage } from './pages/Index'
 import { Layout } from './components/Layout'
 import { GamePage } from './pages/Game'
-import { Global } from '@emotion/react'
 
 const App = () => {
   const loaded = useStore(wallet.$loaded)

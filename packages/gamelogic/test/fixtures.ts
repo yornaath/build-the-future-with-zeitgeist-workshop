@@ -1,10 +1,10 @@
-import { empty, GameBoard, GameState, Turn, create } from '../src'
+import { empty, GameBoard, GameState, Turn, empty } from '../src'
 
 export const challenger = 'foo'
 export const challenged = 'bar'
 
 export const createFreshState = (): GameState =>
-  create(0, {
+  empty(0, {
     challenger,
     challenged,
   })

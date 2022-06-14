@@ -1,5 +1,5 @@
 import update from 'immutability-helper'
-import { Coordinate, GameBoard, Slot, empty } from './gameboard'
+import * as GB from './gameboard'
 
 export type GameState = FreshGame | ProgressingGame | FinishedGame
 
@@ -21,17 +21,17 @@ export type GameStateBase = {
     challenger: string
     challenged: string
   }
-  state: GameBoard
+  state: GB.GameBoard
   events: { event: string; blockNumber: number }[]
 }
 
 export type Turn = {
   player: string
   blockNumber: number
-  coord: Coordinate
+  coord: GB.Coordinate
 }
 
-export const create = (
+export const empty = (
   blockNumber: number,
   players: {
     challenger: string
@@ -40,7 +40,7 @@ export const create = (
 ): FreshGame => ({
   type: 'fresh',
   players,
-  state: empty(),
+  state: GB.empty(),
   events: [
     {
       blockNumber,
@@ -133,7 +133,7 @@ export const turn = (state: GameState, turn: Turn): GameState => {
   }
 }
 
-export const winningPatterns: Coordinate[][] = [
+export const winningPatterns: GB.Coordinate[][] = [
   // horizontal
   [
     [0, 0],
@@ -198,7 +198,7 @@ export const hasWinner = (
 
 export const makeMove = (state: GameState, turn: Turn): GameState => {
   const [x, y] = turn.coord
-  const slot: Slot = state.players.challenger === turn.player ? 'x' : 'o'
+  const slot: GB.Slot = state.players.challenger === turn.player ? 'x' : 'o'
   return update(state, {
     type: { $set: 'progressing' },
     events: {

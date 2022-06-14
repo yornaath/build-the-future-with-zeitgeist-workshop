@@ -54,7 +54,7 @@ export const aggregate = async (
 
         await repo.put({
           marketId: event.market.marketId,
-          state: GameState.create(blockNumber, {
+          state: GameState.empty(blockNumber, {
             challenger: metadata.categories[0].name,
             challenged: metadata.categories[1].name,
           }),

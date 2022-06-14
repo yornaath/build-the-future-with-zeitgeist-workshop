@@ -1,3 +1,4 @@
+import type { KeyringPair } from '@polkadot/keyring/types'
 import SDK from '@zeitgeistpm/sdk'
 import {
   DecodedMarketMetadata,
@@ -11,7 +12,6 @@ import {
 } from '@tick-tack-block/lib'
 import * as GameState from '@tick-tack-block/gamelogic/src/gamestate'
 import * as GameEvents from './event'
-import oracle from '../oracle'
 
 /**
  * GameAggregate Model
@@ -40,6 +40,7 @@ export const aggregate = async (
   sdk: SDK,
   repo: Repo.Repo<GameAggregate, 'marketId'>,
   [block, events]: BlockEventsPair,
+  signer?: KeyringPair,
 ) => {
   const blockNumber = blockNumberOf(block)
   const gameEvents = await GameEvents.parseBlockEvents(sdk, [block, events])
@@ -90,11 +91,18 @@ export const aggregate = async (
           )
 
           if (!assetId) {
-            console.warn('Invariant')
+            console.warn('Invariant, no asset id.')
             break
           }
 
-          await market.reportOutcome(oracle, { categorical: assetId })
+          if (signer) {
+            await market.reportOutcome(signer, { categorical: assetId })
+          }
+
+          await repo.put({
+            ...game,
+            resolved: true,
+          })
         }
       }
     }

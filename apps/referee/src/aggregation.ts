@@ -3,6 +3,7 @@ import SDK from '@zeitgeistpm/sdk'
 import { blockNumberOf, Repo, tail } from '@tick-tack-block/lib'
 import * as Cursor from './model/cursor'
 import * as Game from './model/game'
+import oracle from './model/oracle'
 
 /**
  * Run the game state aggregator.
@@ -25,7 +26,7 @@ export const aggregateGames = async (db: Db, sdk: SDK) => {
   )
 
   return tail(sdk.api, cursor, async ([block, blockEvents]) => {
-    await Game.aggregate(sdk, persistence, [block, blockEvents])
+    await Game.aggregate(sdk, persistence, [block, blockEvents], oracle)
     await Cursor.put(db, 'games', blockNumberOf(block))
     console.log(`processed: ${block.block.header.number.toHuman()}`)
   })

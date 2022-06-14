@@ -4,6 +4,8 @@
 
 This is the code for the talk given at the Polkadot Global Series North America edition for [Zeitgeist.pm](https://zeitgeist.pm/).
 
+[Watch the code walk on Crowdcast!](https://www.crowdcast.io/e/building-the-future-with)
+
 ## Build & Run
 
 Build the source and the run the docker containers rusing docker compose.

@@ -89,7 +89,7 @@ export const NewGameButton = () => {
       const ammount = (100 * ZTG).toString()
 
       const oracle = referee.address
-      const period = { timestamp: [Date.now(), Date.now() + ms('10 minutes')] }
+      const period = { timestamp: [Date.now(), Date.now() + ms('20 minutes')] }
       const mdm: MarketDisputeMechanism = { Authorized: 0 }
       const baseAssetAmount = ammount
       const amts = [ammount, ammount]

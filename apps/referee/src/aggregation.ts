@@ -27,5 +27,6 @@ export const aggregateGames = async (db: Db, sdk: SDK) => {
   return tail(sdk.api, cursor, async ([block, blockEvents]) => {
     await Game.aggregate(sdk, persistence, [block, blockEvents])
     await Cursor.put(db, 'games', blockNumberOf(block))
+    console.log(`processed: ${block.block.header.number.toHuman()}`)
   })
 }

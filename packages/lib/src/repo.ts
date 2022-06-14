@@ -1,10 +1,24 @@
 import type { Db } from 'mongodb'
 
+/**
+ * Repository structure for Entity storage.
+ */
+
 export type Repo<T, ID extends keyof T & string> = {
   get(id: T[ID]): Promise<T | null>
   put(item: T): Promise<void>
   list(): Promise<T[]>
 }
+
+/**
+ *
+ * Repo implemented on top of mongodb
+ *
+ * @param db mongodb.Db
+ * @param collectionName string
+ * @param idField ID = keyof T
+ * @returns Repo<T, ID>
+ */
 
 export const db = <T, ID extends keyof T & string>(
   db: Db,
@@ -29,6 +43,15 @@ export const db = <T, ID extends keyof T & string>(
 
   return { get, put, list }
 }
+
+/**
+ *
+ * Repo implemented on top of in memory record.
+ *
+ * @param db Record<string, T>
+ * @param idField ID = keyof T
+ * @returns Repo<T, ID>
+ */
 
 export const memory = <T, ID extends keyof T & string>(
   db: Record<string, T>,

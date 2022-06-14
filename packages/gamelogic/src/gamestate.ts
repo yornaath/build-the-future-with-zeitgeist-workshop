@@ -49,15 +49,6 @@ export const create = (
   ],
 })
 
-export const judge = (state: GameState) => {
-  if (state.type === 'finished') {
-    return state.winner
-  }
-  const nextTurn = getPlayerTurn(state)
-  const winner = nextTurn === 'challenged' ? 'challenger' : 'challenged'
-  return state.players[winner]
-}
-
 export const turn = (state: GameState, turn: Turn): GameState => {
   if (!Object.values(state.players).includes(turn.player)) {
     return {
@@ -80,21 +71,6 @@ export const turn = (state: GameState, turn: Turn): GameState => {
         {
           blockNumber: turn.blockNumber,
           event: `${turn.player} tried to make a move when the game was finished`,
-        },
-      ],
-    }
-  }
-
-  if (state.type === 'fresh' && turn.player === state.players.challenger) {
-    return {
-      ...state,
-      type: 'finished',
-      winner: state.players.challenged,
-      events: [
-        ...state.events,
-        {
-          blockNumber: turn.blockNumber,
-          event: `Challenger ${state.players.challenger} tried to make the first move, resulting is loss.`,
         },
       ],
     }

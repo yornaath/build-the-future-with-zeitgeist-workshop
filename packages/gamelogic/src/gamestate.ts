@@ -1,4 +1,5 @@
 import update from 'immutability-helper'
+import { WINNING_PATTERNS } from './constants'
 import * as GB from './gameboard'
 
 export type GameState = FreshGame | ProgressingGame | FinishedGame
@@ -133,56 +134,10 @@ export const turn = (state: GameState, turn: Turn): GameState => {
   }
 }
 
-export const winningPatterns: GB.Coordinate[][] = [
-  // horizontal
-  [
-    [0, 0],
-    [1, 0],
-    [2, 0],
-  ],
-  [
-    [0, 1],
-    [1, 1],
-    [2, 1],
-  ],
-  [
-    [0, 2],
-    [1, 2],
-    [2, 2],
-  ],
-  // vertical
-  [
-    [0, 0],
-    [0, 1],
-    [0, 2],
-  ],
-  [
-    [1, 0],
-    [1, 1],
-    [1, 2],
-  ],
-  [
-    [2, 0],
-    [2, 1],
-    [2, 2],
-  ],
-  // slices
-  [
-    [0, 0],
-    [1, 1],
-    [2, 2],
-  ],
-  [
-    [0, 2],
-    [1, 1],
-    [2, 0],
-  ],
-]
-
 export const hasWinner = (
   state: GameState,
 ): keyof GameState['players'] | null => {
-  const rows = winningPatterns.map(pattern => {
+  const rows = WINNING_PATTERNS.map(pattern => {
     return pattern.map(([x, y]) => state.state[y][x])
   })
 

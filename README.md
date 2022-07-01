@@ -5,6 +5,7 @@
 This is the code for the talk given at the Polkadot Global Series North America edition for [Zeitgeist.pm](https://zeitgeist.pm/).
 
 [Watch the code walk on Crowdcast!](https://www.crowdcast.io/e/building-the-future-with)
+[Or read more details in this subsocal post](https://app.subsocial.network/@kusamacommunity/building-an-event-sourced-game-with-zeitgeist-34280)
 
 ## Build & Run
 
